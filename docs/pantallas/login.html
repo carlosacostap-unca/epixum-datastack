@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Epixum - Login</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&amp;family=Manrope:wght@400;500;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-container-lowest": "#050507",
+              "outline-variant": "rgba(255, 255, 255, 0.04)",
+              "outline": "rgba(255, 255, 255, 0.08)",
+              "surface-variant": "rgba(255, 255, 255, 0.03)",
+              "surface-tint": "#1418eb",
+              "on-error": "#FFFFFF",
+              "secondary-fixed-dim": "#38BDF8",
+              "surface": "#0A0A0C",
+              "on-secondary-fixed": "#001F29",
+              "background": "#0A0A0C",
+              "secondary": "#38BDF8",
+              "inverse-on-surface": "#0A0A0C",
+              "primary-fixed-dim": "#BFC2FF",
+              "on-tertiary": "#FFFFFF",
+              "on-surface": "#EDEDED",
+              "tertiary-fixed-dim": "#8F8F9D",
+              "primary": "#1418eb",
+              "on-secondary": "#000000",
+              "surface-container": "#121215",
+              "surface-dim": "#08080A",
+              "primary-container": "#1418eb",
+              "on-secondary-container": "#38BDF8",
+              "on-background": "#EDEDED",
+              "on-error-container": "#EF4444",
+              "error": "#EF4444",
+              "surface-bright": "#1A1A1D",
+              "on-tertiary-fixed-variant": "#454557",
+              "inverse-surface": "#EDEDED",
+              "surface-container-high": "#1C1C21",
+              "on-primary-fixed": "#00006E",
+              "on-surface-variant": "#8F8F9D",
+              "secondary-container": "rgba(56, 189, 248, 0.1)",
+              "on-tertiary-container": "#EDEDED",
+              "on-secondary-fixed-variant": "#004D63",
+              "tertiary-container": "rgba(143, 143, 157, 0.1)",
+              "inverse-primary": "#38BDF8",
+              "tertiary-fixed": "#F2F2F5",
+              "tertiary": "#8F8F9D",
+              "primary-fixed": "#E0E0FF",
+              "on-primary-fixed-variant": "#0C0EE9",
+              "surface-container-low": "#0A0A0C",
+              "secondary-fixed": "#E0FBFF",
+              "on-tertiary-fixed": "#1A1A1D",
+              "surface-container-highest": "#28282E",
+              "on-primary": "#FFFFFF",
+              "on-primary-container": "#FFFFFF",
+              "error-container": "rgba(239, 68, 68, 0.1)"
+            },
+            fontFamily: {
+              "headline": ["Outfit", "sans-serif"],
+              "body": ["Manrope", "sans-serif"],
+              "label": ["Manrope", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #0A0A0C;
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(20, 24, 235, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(56, 189, 248, 0.1) 0%, transparent 40%);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .floating-input:focus-within label,
+        .floating-input input:not(:placeholder-shown) + label {
+            transform: translateY(-1.5rem) scale(0.85);
+            color: #38BDF8;
+        }
+    </style>
+</head>
+<body class="font-body text-on-surface min-h-screen flex items-center justify-center p-6 selection:bg-primary/30">
+<!-- Main Container -->
+<main class="w-full max-w-[440px] relative z-10">
+<!-- Glassmorphism Login Card -->
+<div class="glass-card rounded-xl p-8 md:p-12 flex flex-col items-center">
+<!-- Logo Section -->
+<header class="mb-10 text-center">
+<div class="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-primary mb-4 shadow-[0_0_20px_rgba(20,24,235,0.4)]">
+<span class="material-symbols-outlined text-white text-3xl" data-icon="rocket_launch">rocket_launch</span>
+</div>
+<h1 class="text-2xl font-bold tracking-tight text-white font-headline">PostDiplomatura</h1>
+</header>
+<!-- Welcome Text -->
+<div class="w-full mb-8 text-center">
+<h2 class="text-3xl font-light text-on-surface font-headline">Bienvenido de nuevo</h2>
+<p class="text-on-surface-variant text-sm mt-2">Ingresa tus credenciales para continuar</p>
+</div>
+<!-- Social Login -->
+<button class="w-full flex items-center justify-center gap-3 py-4 px-4 rounded-lg bg-gradient-to-r from-indigo-600 to-secondary text-white font-bold text-sm tracking-widest uppercase shadow-[0_10px_30px_-10px_rgba(20,24,235,0.4)] hover:shadow-[0_15px_40px_-10px_rgba(20,24,235,0.6)] hover:scale-[1.02] active:scale-95 transition-all duration-300 group">
+<svg class="w-5 h-5 bg-white p-1 rounded-sm" viewbox="0 0 24 24">
+<path d="M12 5.04c1.64 0 3.12.56 4.28 1.66l3.21-3.21C17.51 1.6 14.97 1 12 1 7.4 1 3.48 3.65 1.61 7.53l3.65 2.84C6.13 7.15 8.83 5.04 12 5.04z" fill="#EA4335"></path>
+<path d="M23.49 12.27c0-.82-.07-1.61-.21-2.37H12v4.5h6.44c-.28 1.48-1.12 2.73-2.38 3.58l3.68 2.85c2.15-1.98 3.75-4.91 3.75-8.56z" fill="#4285F4"></path>
+<path d="M5.26 14.73l-3.65 2.84c1.87 3.88 5.79 6.53 10.39 6.53 2.97 0 5.49-1.18 7.33-3.19l-3.68-2.85c-1.02.68-2.32 1.09-3.65 1.09-2.73 0-5.04-1.84-5.87-4.42z" fill="#FBBC05"></path>
+<path d="M12 23.1c2.97 0 5.49-1.18 7.33-3.19l-3.68-2.85c-1.02.68-2.32 1.09-3.65 1.09-2.73 0-5.04-1.84-5.87-4.42l-3.65 2.84C3.48 20.45 7.4 23.1 12 23.1z" fill="#34A853"></path>
+</svg>
+<span class="text-sm font-bold text-white tracking-widest uppercase">Continuar con Google</span>
+</button>
+<!-- Divider -->
+<!-- Form -->
+<!-- Links Footer -->
+</div>
+<!-- Backdrop Decorative Glow -->
+<div class="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] opacity-20 pointer-events-none">
+<div class="w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary via-transparent to-transparent"></div>
+</div>
+</main>
+<!-- Global Layout Decorative Elements -->
+<div class="fixed top-12 left-12 opacity-30 select-none hidden lg:block">
+<div class="flex items-center gap-3">
+<div class="w-2 h-2 rounded-full bg-secondary animate-pulse"></div>
+<span class="text-[10px] font-bold uppercase tracking-widest text-secondary">Sistemas Activos</span>
+</div>
+</div>
+<div class="fixed bottom-12 right-12 opacity-30 select-none hidden lg:block">
+<span class="text-[10px] font-bold uppercase tracking-[0.3em] text-on-surface-variant">Framework Midnight Obsidian v2.4</span>
+</div>
+<!-- Hidden Footer as per Shell Rules (Suppressed on focused journey) -->
+<!-- The Footer and TopAppBar from JSON are suppressed here to prioritize the focused canvas of the Login Journey -->
+</body></html>

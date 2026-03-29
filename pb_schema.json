@@ -1,0 +1,132 @@
+[
+  {
+    "id": "enrollment_requests_id",
+    "name": "enrollment_requests",
+    "type": "base",
+    "system": false,
+    "schema": [
+      {
+        "system": false,
+        "id": "first_name_field",
+        "name": "firstName",
+        "type": "text",
+        "required": true,
+        "presentable": false,
+        "unique": false,
+        "options": {
+          "min": 1,
+          "max": null,
+          "pattern": ""
+        }
+      },
+      {
+        "system": false,
+        "id": "last_name_field",
+        "name": "lastName",
+        "type": "text",
+        "required": true,
+        "presentable": false,
+        "unique": false,
+        "options": {
+          "min": 1,
+          "max": null,
+          "pattern": ""
+        }
+      },
+      {
+        "system": false,
+        "id": "dni_field",
+        "name": "dni",
+        "type": "text",
+        "required": true,
+        "presentable": false,
+        "unique": false,
+        "options": {
+          "min": 1,
+          "max": null,
+          "pattern": ""
+        }
+      },
+      {
+        "system": false,
+        "id": "birthdate_field",
+        "name": "birthDate",
+        "type": "date",
+        "required": true,
+        "presentable": false,
+        "unique": false,
+        "options": {
+          "min": "",
+          "max": ""
+        }
+      },
+      {
+        "system": false,
+        "id": "email_field",
+        "name": "email",
+        "type": "email",
+        "required": true,
+        "presentable": false,
+        "unique": false,
+        "options": {
+          "exceptDomains": null,
+          "onlyDomains": null
+        }
+      },
+      {
+        "system": false,
+        "id": "phone_field",
+        "name": "phone",
+        "type": "text",
+        "required": true,
+        "presentable": false,
+        "unique": false,
+        "options": {
+          "min": null,
+          "max": null,
+          "pattern": ""
+        }
+      },
+      {
+        "system": false,
+        "id": "courses_field",
+        "name": "courses",
+        "type": "relation",
+        "required": true,
+        "presentable": false,
+        "unique": false,
+        "options": {
+          "collectionId": "courses",
+          "cascadeDelete": false,
+          "minSelect": 1,
+          "maxSelect": null,
+          "displayFields": null
+        }
+      },
+      {
+        "system": false,
+        "id": "status_field",
+        "name": "status",
+        "type": "select",
+        "required": true,
+        "presentable": false,
+        "unique": false,
+        "options": {
+          "maxSelect": 1,
+          "values": [
+            "pending",
+            "approved",
+            "rejected"
+          ]
+        }
+      }
+    ],
+    "indexes": [],
+    "listRule": "@request.auth.role = \"docente\" || @request.auth.role = \"admin\"",
+    "viewRule": "@request.auth.role = \"docente\" || @request.auth.role = \"admin\"",
+    "createRule": "",
+    "updateRule": "@request.auth.role = \"docente\" || @request.auth.role = \"admin\"",
+    "deleteRule": "@request.auth.role = \"docente\" || @request.auth.role = \"admin\"",
+    "options": {}
+  }
+]

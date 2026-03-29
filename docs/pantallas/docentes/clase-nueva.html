@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Nueva Clase - Epixum</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;600;700;800;900&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface": "#0A0A0C",
+                        "background": "#0A0A0C",
+                        "primary": "#6366F1",
+                        "secondary": "#38BDF8",
+                        "on-surface": "#EDEDED",
+                        "on-surface-variant": "#8F8F9D",
+                        "outline": "rgba(255, 255, 255, 0.08)",
+                        "surface-variant": "rgba(255, 255, 255, 0.03)",
+                    },
+                    fontFamily: {
+                        "headline": ["Epilogue", "sans-serif"],
+                        "body": ["Manrope", "sans-serif"],
+                        "label": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #0A0A0C;
+            background-image: 
+                radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 100% 100%, rgba(56, 189, 248, 0.1) 0%, transparent 40%);
+            color: #EDEDED;
+            min-height: 100vh;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .floating-input:focus-within label {
+            transform: translateY(-1.5rem) scale(0.85);
+            color: #6366F1;
+        }
+        .floating-input input:not(:placeholder-shown) + label {
+            transform: translateY(-1.5rem) scale(0.85);
+        }
+        .input-glow:focus {
+            box-shadow: 0 4px 12px -4px rgba(99, 102, 241, 0.3);
+            border-bottom-color: #6366F1;
+        }
+    </style>
+</head>
+<body class="font-body selection:bg-primary/30 antialiased">
+<!-- TopNavBar Shell (Match SCREEN_20) -->
+<nav class="fixed top-0 w-full z-50 bg-slate-950/40 backdrop-blur-xl border-b border-white/10 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] flex justify-between items-center px-8 h-16">
+<div class="flex items-center gap-8">
+<span class="text-2xl font-bold tracking-tighter text-indigo-500 font-headline">Epixum</span>
+<div class="hidden md:flex gap-6 items-center h-full">
+<a class="text-slate-400 hover:text-slate-200 transition-colors font-headline text-[15px] tracking-tight" href="#">Dashboard</a>
+<a class="text-slate-400 hover:text-slate-200 transition-colors font-headline text-[15px] tracking-tight" href="#">Calendario</a>
+<a class="text-indigo-400 font-semibold border-b-2 border-indigo-500 pb-1 font-headline text-[15px] tracking-tight" href="#">Recursos</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex gap-2">
+<button class="p-2 text-slate-400 hover:bg-white/5 rounded-lg transition-all active:scale-95 duration-200">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-slate-400 hover:bg-white/5 rounded-lg transition-all active:scale-95 duration-200">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+<img alt="Avatar del Docente" class="w-8 h-8 rounded-full border border-white/10" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBAp21jlCS-54ZY8SvX3xyMUxOk-BCVhFlrlWZzksZU7JsyxkcCBNyJprPAfV3ks94aGyI7HR0NUly_l4bHVoWrGLxL6J0JK8XK3FLfavi1y5uwSny9knpQQqD3MMjALeKRnabbBVJeU6Z5HgAk4h5UUE2leyIWiVgBN0TqYb8PA3EhAk7f-YXfiLp1uBvjpnraZyNK9T5sHcnecvij-AoAMEKRYBn4YfnwgYE_d-Gg3u9e7AfS1B8QuwM8PqljCVpfVy3RwHdDf4I"/>
+</div>
+</nav>
+<!-- SideNavBar Shell (Match SCREEN_20) -->
+<aside class="fixed left-0 top-16 h-[calc(100vh-64px)] w-64 bg-slate-950/60 backdrop-blur-2xl border-r border-white/5 shadow-2xl flex flex-col py-6 z-40">
+<div class="px-6 mb-8">
+<div class="flex items-center gap-3 mb-2">
+<div class="w-8 h-8 rounded bg-indigo-500 flex items-center justify-center text-white font-black">E</div>
+<div>
+<h3 class="text-white font-bold text-sm tracking-tight leading-none">Gestión Académica</h3>
+<p class="text-slate-500 text-[10px] uppercase tracking-widest mt-1">Panel del Docente</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="text-slate-400 flex items-center gap-3 px-6 py-3 hover:text-slate-100 font-['Epilogue'] font-medium text-sm tracking-wide hover:bg-white/5 transition-all duration-300 hover:translate-x-1" href="#">
+<span class="material-symbols-outlined">info</span>
+<span>Sobre el curso</span>
+</a>
+<a class="bg-indigo-500/10 text-indigo-400 border-r-4 border-indigo-500 flex items-center gap-3 px-4 py-3 ml-2 rounded-l-lg font-['Epilogue'] font-medium text-sm tracking-wide" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">video_library</span>
+<span>Clases</span>
+</a>
+<a class="text-slate-400 flex items-center gap-3 px-6 py-3 hover:text-slate-100 font-['Epilogue'] font-medium text-sm tracking-wide hover:bg-white/5 transition-all duration-300 hover:translate-x-1" href="#">
+<span class="material-symbols-outlined">assignment</span>
+<span>Trabajos Prácticos</span>
+</a>
+<a class="text-slate-400 flex items-center gap-3 px-6 py-3 hover:text-slate-100 font-['Epilogue'] font-medium text-sm tracking-wide hover:bg-white/5 transition-all duration-300 hover:translate-x-1" href="#">
+<span class="material-symbols-outlined">forum</span>
+<span>Consultas</span>
+</a>
+</nav>
+<div class="px-6 mb-6">
+<button class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-sm font-bold shadow-lg shadow-indigo-600/20 transition-all active:scale-95">
+            Nueva Clase
+        </button>
+</div>
+<div class="mt-auto pt-6 border-t border-white/5 space-y-1">
+<a class="text-slate-400 flex items-center gap-3 px-6 py-2 hover:text-slate-100 text-sm font-['Epilogue'] hover:bg-white/5 transition-all" href="#">
+<span class="material-symbols-outlined">help</span>
+<span>Soporte</span>
+</a>
+<a class="text-slate-400 flex items-center gap-3 px-6 py-2 hover:text-slate-100 text-sm font-['Epilogue'] hover:bg-white/5 transition-all" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span>Cerrar Sesión</span>
+</a>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="ml-64 pt-24 pb-12 px-12 max-w-7xl mx-auto">
+<header class="mb-12">
+<div class="flex items-center gap-2 text-on-surface-variant mb-4">
+<a class="hover:text-secondary transition-colors text-[11px] font-bold uppercase tracking-widest" href="#">Clases</a>
+<span class="material-symbols-outlined text-xs">chevron_right</span>
+<span class="text-[11px] font-bold uppercase tracking-widest text-indigo-400">Nueva Clase</span>
+</div>
+<h1 class="font-headline text-[36px] font-medium tracking-tight text-on-surface">Nueva Clase</h1>
+<p class="text-on-surface-variant mt-2 text-lg font-body">Define los detalles de la próxima sesión académica.</p>
+</header>
+<section class="grid grid-cols-12 gap-8">
+<!-- Form Section -->
+<div class="col-span-12 lg:col-span-7 space-y-10">
+<div class="glass-panel p-10 rounded-xl">
+<form class="space-y-12">
+<!-- Class Title -->
+<div class="relative floating-input group">
+<input class="block w-full bg-transparent border-0 border-b border-white/10 px-0 py-3 text-on-surface focus:ring-0 focus:border-indigo-500 input-glow transition-all duration-300" id="title" placeholder=" " type="text"/>
+<label class="absolute left-0 top-3 text-on-surface-variant transition-all pointer-events-none origin-left font-medium" for="title">Título de la clase</label>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+<!-- Date -->
+<div class="relative floating-input">
+<input class="block w-full bg-transparent border-0 border-b border-white/10 px-0 py-3 text-on-surface focus:ring-0 focus:border-indigo-500 input-glow transition-all duration-300 [color-scheme:dark]" id="date" placeholder=" " type="date"/>
+<label class="absolute left-0 top-3 text-on-surface-variant transition-all pointer-events-none origin-left scale-85 -translate-y-6 font-medium" for="date">Fecha</label>
+</div>
+<!-- Start Time -->
+<div class="relative floating-input">
+<input class="block w-full bg-transparent border-0 border-b border-white/10 px-0 py-3 text-on-surface focus:ring-0 focus:border-indigo-500 input-glow transition-all duration-300 [color-scheme:dark]" id="time" placeholder=" " type="time"/>
+<label class="absolute left-0 top-3 text-on-surface-variant transition-all pointer-events-none origin-left scale-85 -translate-y-6 font-medium" for="time">Hora de inicio</label>
+</div>
+</div>
+<!-- Duration -->
+<div class="relative floating-input">
+<input class="block w-full bg-transparent border-0 border-b border-white/10 px-0 py-3 text-on-surface focus:ring-0 focus:border-indigo-500 input-glow transition-all duration-300" id="duration" placeholder=" " type="text"/>
+<label class="absolute left-0 top-3 text-on-surface-variant transition-all pointer-events-none origin-left font-medium" for="duration">Duración (ej: 1h 30m)</label>
+</div>
+<!-- Description -->
+<div class="space-y-4">
+<label class="text-[10px] font-bold tracking-[0.2em] uppercase text-slate-500">Descripción o Resumen</label>
+<textarea class="block w-full bg-white/5 border border-white/5 rounded-xl px-4 py-3 text-on-surface focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-300 outline-none placeholder:text-white/20" id="desc" placeholder="Escribe los objetivos y temas a tratar..." rows="4"></textarea>
+</div>
+</form>
+</div>
+<div class="flex items-center justify-end gap-6 pt-4">
+<button class="px-8 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-colors font-semibold text-sm">
+                    Cancelar
+                </button>
+<button class="px-10 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-500 text-white font-bold text-sm shadow-lg shadow-indigo-600/30 hover:shadow-indigo-600/50 hover:scale-[1.02] active:scale-95 transition-all">
+                    Publicar Clase
+                </button>
+</div>
+</div>
+<!-- Sidebar Assets -->
+<div class="col-span-12 lg:col-span-5 space-y-8">
+<!-- Resource Zone -->
+<div class="glass-panel p-8 rounded-xl">
+<h3 class="text-[10px] font-bold tracking-[0.2em] uppercase text-slate-500 mb-6">Recursos y Materiales</h3>
+<div class="border-2 border-dashed border-white/5 rounded-xl p-10 flex flex-col items-center justify-center gap-4 hover:border-indigo-500/40 hover:bg-white/5 transition-all cursor-pointer group">
+<div class="w-16 h-16 rounded-full bg-indigo-500/10 flex items-center justify-center text-indigo-400 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-3xl">upload_file</span>
+</div>
+<div class="text-center">
+<p class="text-on-surface font-semibold">Soltar archivos aquí</p>
+<p class="text-on-surface-variant text-xs mt-1">PDF, MP4, PNG hasta 50MB</p>
+</div>
+</div>
+<div class="mt-8 space-y-4">
+<p class="text-[10px] font-bold tracking-[0.2em] uppercase text-slate-500">Enlaces rápidos</p>
+<div class="flex items-center gap-3 bg-white/5 border border-white/5 p-4 rounded-xl hover:bg-white/10 transition-colors cursor-pointer group">
+<span class="material-symbols-outlined text-indigo-400 group-hover:scale-110 transition-transform">link</span>
+<span class="text-sm font-medium text-on-surface">Añadir enlace de video</span>
+</div>
+<div class="flex items-center gap-3 bg-white/5 border border-white/5 p-4 rounded-xl hover:bg-white/10 transition-colors cursor-pointer group">
+<span class="material-symbols-outlined text-secondary group-hover:scale-110 transition-transform">folder_zip</span>
+<span class="text-sm font-medium text-on-surface">Adjuntar bibliografía</span>
+</div>
+</div>
+</div>
+<!-- Preview Card -->
+<div class="glass-panel overflow-hidden rounded-xl relative group">
+<div class="absolute top-4 right-4 z-10">
+<span class="px-2 py-1 bg-indigo-600/90 backdrop-blur-md text-[10px] font-bold uppercase tracking-wider rounded flex items-center gap-1 text-white">
+<span class="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></span>
+                        Vista Previa
+                    </span>
+</div>
+<div class="h-40 relative">
+<img class="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7pGxbC_oCk230PLnXcFZIv7aYE6VWlTbWNNFMQPOCRGWagpzbf_9-OlaS2JKyhN6IYQapRf6aeImOt8ZqSQ5o2kHd0hJMJI50b1JNtYGAbxW863-N5YaYoiZla_N8hzxDZsjW-iwGvtHYotQRPBuS9n-QY7mUEds2s33UYH6V1mwjaAigeZF2ZnGiNtafqFV4C2uc0jgFY4UT-SBuP3UTAbuODr0VqU4H50ezK8DOfAh9G2tcrzNHXIFDXtwy60YOYz4si0inte4"/>
+<div class="absolute inset-0 bg-gradient-to-t from-[#0A0A0C] to-transparent"></div>
+</div>
+<div class="p-6">
+<h4 class="font-headline text-lg font-medium text-on-surface mb-2 group-hover:text-indigo-400 transition-colors">Composición Atmosférica</h4>
+<div class="flex items-center gap-4 text-xs text-on-surface-variant font-medium">
+<span class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-slate-500">calendar_today</span>
+                            Seleccionar fecha
+                        </span>
+<span class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-slate-500">schedule</span>
+                            --:--
+                        </span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Footer from SCREEN_20/8 -->
+<footer class="max-w-6xl mx-auto mt-20 pt-8 border-t border-white/5 flex justify-between items-center text-slate-600">
+<p class="text-xs font-body">© 2026 Epixum. Todos los derechos reservados.</p>
+<div class="flex gap-6">
+<a class="text-xs hover:text-indigo-400 transition-colors" href="#">Privacidad</a>
+<a class="text-xs hover:text-indigo-400 transition-colors" href="#">Términos</a>
+<a class="text-xs hover:text-indigo-400 transition-colors" href="#">Ayuda</a>
+</div>
+</footer>
+</main>
+</body></html>

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;600;700;800;900&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-error-container": "#EF4444",
+                        "surface": "#0A0A0C",
+                        "on-secondary-container": "#38BDF8",
+                        "tertiary-container": "rgba(143, 143, 157, 0.1)",
+                        "surface-container-high": "#1C1C21",
+                        "outline-variant": "rgba(255, 255, 255, 0.04)",
+                        "on-tertiary": "#FFFFFF",
+                        "secondary-fixed": "#E0FBFF",
+                        "on-secondary-fixed": "#001F29",
+                        "tertiary-fixed": "#F2F2F5",
+                        "primary-fixed": "#E0E0FF",
+                        "tertiary-fixed-dim": "#8F8F9D",
+                        "on-background": "#EDEDED",
+                        "surface-container-highest": "#28282E",
+                        "surface-bright": "#1A1A1D",
+                        "on-tertiary-fixed-variant": "#454557",
+                        "surface-container": "#121215",
+                        "surface-variant": "rgba(255, 255, 255, 0.03)",
+                        "inverse-primary": "#38BDF8",
+                        "outline": "rgba(255, 255, 255, 0.08)",
+                        "error-container": "rgba(239, 68, 68, 0.1)",
+                        "tertiary": "#8F8F9D",
+                        "on-error": "#FFFFFF",
+                        "on-tertiary-container": "#EDEDED",
+                        "background": "#0A0A0C",
+                        "primary": "#1418eb",
+                        "on-primary": "#FFFFFF",
+                        "error": "#EF4444",
+                        "on-surface-variant": "#8F8F9D",
+                        "on-primary-fixed-variant": "#0C0EE9",
+                        "primary-fixed-dim": "#BFC2FF",
+                        "on-surface": "#EDEDED",
+                        "secondary-container": "rgba(56, 189, 248, 0.1)",
+                        "on-tertiary-fixed": "#1A1A1D",
+                        "surface-tint": "#1418eb",
+                        "secondary": "#38BDF8",
+                        "inverse-surface": "#EDEDED",
+                        "surface-container-lowest": "#050507",
+                        "on-primary-fixed": "#00006E",
+                        "inverse-on-surface": "#0A0A0C",
+                        "surface-container-low": "#0A0A0C",
+                        "surface-dim": "#08080A",
+                        "primary-container": "#1418eb",
+                        "on-secondary-fixed-variant": "#004D63",
+                        "on-primary-container": "#FFFFFF",
+                        "secondary-fixed-dim": "#38BDF8",
+                        "on-secondary": "#000000"
+                    },
+                    fontFamily: {
+                        "headline": ["Epilogue"],
+                        "body": ["Manrope"],
+                        "label": ["Manrope"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background: radial-gradient(circle at 50% -20%, #1418eb33 0%, #0A0A0C 100%);
+            min-height: 100vh;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body">
+<!-- TopNavBar Shell -->
+<nav class="fixed top-0 w-full z-50 bg-slate-950/40 backdrop-blur-xl border-b border-white/10 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] flex justify-between items-center px-8 h-16 w-full">
+<div class="flex items-center gap-8">
+<span class="text-2xl font-bold tracking-tighter text-indigo-500 font-headline">Epixum</span>
+<div class="hidden md:flex gap-6 items-center h-full">
+<a class="text-slate-400 hover:text-slate-200 transition-colors font-headline text-[15px] tracking-tight" href="#">Dashboard</a>
+<a class="text-slate-400 hover:text-slate-200 transition-colors font-headline text-[15px] tracking-tight" href="#">Calendario</a>
+<a class="text-indigo-400 font-semibold border-b-2 border-indigo-500 pb-1 font-headline text-[15px] tracking-tight" href="#">Recursos</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex gap-2">
+<button class="p-2 text-slate-400 hover:bg-white/5 rounded-lg transition-all active:scale-95 duration-200">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-slate-400 hover:bg-white/5 rounded-lg transition-all active:scale-95 duration-200">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+<img alt="Avatar del Docente" class="w-8 h-8 rounded-full border border-white/10" data-alt="portrait of a professional educator in his 40s with glasses, soft studio lighting, blurred academic background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBAp21jlCS-54ZY8SvX3xyMUxOk-BCVhFlrlWZzksZU7JsyxkcCBNyJprPAfV3ks94aGyI7HR0NUly_l4bHVoWrGLxL6J0JK8XK3FLfavi1y5uwSny9knpQQqD3MMjALeKRnabbBVJeU6Z5HgAk4h5UUE2leyIWiVgBN0TqYb8PA3EhAk7f-YXfiLp1uBvjpnraZyNK9T5sHcnecvij-AoAMEKRYBn4YfnwgYE_d-Gg3u9e7AfS1B8QuwM8PqljCVpfVy3RwHdDf4I"/>
+</div>
+</nav>
+<!-- SideNavBar Shell -->
+<aside class="fixed left-0 top-16 h-[calc(100vh-64px)] w-64 bg-slate-950/60 backdrop-blur-2xl border-r border-white/5 shadow-2xl flex flex-col py-6 z-40">
+<div class="px-6 mb-8">
+<div class="flex items-center gap-3 mb-2">
+<div class="w-8 h-8 rounded bg-indigo-500 flex items-center justify-center text-white font-black">E</div>
+<div>
+<h3 class="text-white font-bold text-sm tracking-tight leading-none">Gestión Académica</h3>
+<p class="text-slate-500 text-[10px] uppercase tracking-widest mt-1">Panel del Docente</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="bg-indigo-500/10 text-indigo-400 border-r-4 border-indigo-500 flex items-center gap-3 px-4 py-3 ml-2 rounded-l-lg font-['Epilogue'] font-medium text-sm tracking-wide hover:translate-x-1 transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">info</span>
+<span>Sobre el curso</span>
+</a>
+<a class="text-slate-400 flex items-center gap-3 px-6 py-3 hover:text-slate-100 font-['Epilogue'] font-medium text-sm tracking-wide hover:bg-white/5 transition-all duration-300 hover:translate-x-1 transition-transform" href="#">
+<span class="material-symbols-outlined">video_library</span>
+<span>Clases</span>
+</a>
+<a class="text-slate-400 flex items-center gap-3 px-6 py-3 hover:text-slate-100 font-['Epilogue'] font-medium text-sm tracking-wide hover:bg-white/5 transition-all duration-300 hover:translate-x-1 transition-transform" href="#">
+<span class="material-symbols-outlined">assignment</span>
+<span>Trabajos Prácticos</span>
+</a>
+<a class="text-slate-400 flex items-center gap-3 px-6 py-3 hover:text-slate-100 font-['Epilogue'] font-medium text-sm tracking-wide hover:bg-white/5 transition-all duration-300 hover:translate-x-1 transition-transform" href="#">
+<span class="material-symbols-outlined">forum</span>
+<span>Consultas</span>
+</a>
+</nav>
+<div class="px-6 mb-6">
+<button class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-sm font-bold shadow-lg shadow-indigo-600/20 transition-all active:scale-95">
+                Nueva Clase
+            </button>
+</div>
+<div class="mt-auto pt-6 border-t border-white/5 space-y-1">
+<a class="text-slate-400 flex items-center gap-3 px-6 py-2 hover:text-slate-100 text-sm font-['Epilogue'] hover:bg-white/5 transition-all" href="#">
+<span class="material-symbols-outlined">help</span>
+<span>Soporte</span>
+</a>
+<a class="text-slate-400 flex items-center gap-3 px-6 py-2 hover:text-slate-100 text-sm font-['Epilogue'] hover:bg-white/5 transition-all" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span>Cerrar Sesión</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-16 min-h-screen px-12 py-10">
+<!-- Header Section -->
+<header class="mb-12 max-w-6xl mx-auto flex justify-between items-end">
+<div>
+<div class="flex items-center gap-3 mb-2">
+<span class="px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-400 text-[10px] font-bold uppercase tracking-widest">Activo</span>
+<span class="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse"></span>
+</div>
+<h1 class="text-[36px] font-headline font-medium tracking-tight text-on-surface mb-2">Diseño de Interfaces Avanzadas</h1>
+<p class="text-on-surface-variant font-body text-lg">PostDiplomatura en Experiencia de Usuario &amp; Visual Design</p>
+</div>
+<div class="flex gap-4 mb-2">
+<button class="flex items-center gap-2 px-4 py-2 glass-panel rounded-lg hover:bg-white/10 transition-all text-sm font-semibold">
+<span class="material-symbols-outlined text-sm">edit</span>
+                    Editar Info
+                </button>
+</div>
+</header>
+<!-- Bento Grid Layout -->
+<div class="max-w-6xl mx-auto grid grid-cols-12 gap-6">
+<!-- Description: Large Card -->
+<section class="col-span-12 lg:col-span-8 glass-panel rounded-xl p-8">
+<div class="flex items-center gap-2 mb-6">
+<span class="material-symbols-outlined text-indigo-400">description</span>
+<h2 class="text-xl font-headline font-medium">Descripción General</h2>
+</div>
+<div class="space-y-4 text-on-surface-variant leading-relaxed font-body">
+<p>Este programa intensivo se enfoca en el dominio técnico y conceptual del diseño de interfaces modernas. A lo largo del curso, exploraremos sistemas de diseño complejos, micro-interacciones avanzadas y la implementación de principios de accesibilidad en entornos dinámicos.</p>
+<p>Los estudiantes aplicarán metodologías de prototipado de alta fidelidad utilizando herramientas líderes de la industria, preparándolos para liderar proyectos de diseño en ecosistemas digitales escalables.</p>
+</div>
+<div class="mt-8 grid grid-cols-3 gap-6 pt-8 border-t border-white/5">
+<div>
+<p class="text-[10px] font-label font-bold uppercase tracking-[0.2em] text-slate-500 mb-1">Duración</p>
+<p class="text-indigo-400 font-headline font-semibold">12 Semanas</p>
+</div>
+<div>
+<p class="text-[10px] font-label font-bold uppercase tracking-[0.2em] text-slate-500 mb-1">Inscriptos</p>
+<p class="text-indigo-400 font-headline font-semibold">42 Alumnos</p>
+</div>
+<div>
+<p class="text-[10px] font-label font-bold uppercase tracking-[0.2em] text-slate-500 mb-1">Nivel</p>
+<p class="text-indigo-400 font-headline font-semibold">Avanzado</p>
+</div>
+</div>
+</section>
+<!-- Cronograma: Side Column -->
+<section class="col-span-12 lg:col-span-4 glass-panel rounded-xl p-6 overflow-hidden relative">
+<div class="absolute top-0 right-0 w-32 h-32 bg-indigo-600/10 blur-3xl -z-10"></div>
+<div class="flex items-center justify-between mb-6">
+<h2 class="text-lg font-headline font-medium">Cronograma Próximo</h2>
+<span class="material-symbols-outlined text-slate-500">calendar_today</span>
+</div>
+<div class="space-y-4">
+<div class="p-4 rounded-lg bg-white/5 border-l-2 border-indigo-500">
+<p class="text-[10px] font-label font-bold text-indigo-400 uppercase tracking-widest mb-1">Lunes 18 Oct</p>
+<h4 class="font-bold text-sm">Clase Magistral: Design Tokens</h4>
+<p class="text-xs text-slate-500 mt-1">19:00 - 21:00 hs</p>
+</div>
+<div class="p-4 rounded-lg bg-white/5 border-l-2 border-slate-700">
+<p class="text-[10px] font-label font-bold text-slate-500 uppercase tracking-widest mb-1">Miér 20 Oct</p>
+<h4 class="font-bold text-sm">Entrega de TP #1: Auditoría UI</h4>
+<p class="text-xs text-slate-500 mt-1">Límite: 23:59 hs</p>
+</div>
+<div class="p-4 rounded-lg bg-white/5 border-l-2 border-slate-700">
+<p class="text-[10px] font-label font-bold text-slate-500 uppercase tracking-widest mb-1">Vier 22 Oct</p>
+<h4 class="font-bold text-sm">Sesión de Consultas: Q&amp;A</h4>
+<p class="text-xs text-slate-500 mt-1">18:30 - 19:30 hs</p>
+</div>
+</div>
+<button class="w-full mt-6 py-2 text-xs font-bold text-indigo-400 hover:text-indigo-300 transition-colors">
+                    Ver calendario completo
+                </button>
+</section>
+<!-- Objetivos: List Card -->
+<section class="col-span-12 lg:col-span-5 glass-panel rounded-xl p-8">
+<div class="flex items-center gap-2 mb-6">
+<span class="material-symbols-outlined text-secondary">target</span>
+<h2 class="text-xl font-headline font-medium">Objetivos del Aprendizaje</h2>
+</div>
+<ul class="space-y-4">
+<li class="flex gap-4">
+<div class="flex-shrink-0 w-6 h-6 rounded-full bg-secondary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-[16px] text-secondary">check</span>
+</div>
+<p class="text-sm text-on-surface-variant font-body">Definir y documentar Design Tokens para sistemas multiplataforma.</p>
+</li>
+<li class="flex gap-4">
+<div class="flex-shrink-0 w-6 h-6 rounded-full bg-secondary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-[16px] text-secondary">check</span>
+</div>
+<p class="text-sm text-on-surface-variant font-body">Implementar arquitecturas de componentes complejos en Figma.</p>
+</li>
+<li class="flex gap-4">
+<div class="flex-shrink-0 w-6 h-6 rounded-full bg-secondary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-[16px] text-secondary">check</span>
+</div>
+<p class="text-sm text-on-surface-variant font-body">Diseñar micro-interacciones que mejoren la percepción de performance.</p>
+</li>
+<li class="flex gap-4">
+<div class="flex-shrink-0 w-6 h-6 rounded-full bg-secondary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-[16px] text-secondary">check</span>
+</div>
+<p class="text-sm text-on-surface-variant font-body">Auditar la accesibilidad de productos digitales según WCAG 2.1.</p>
+</li>
+</ul>
+</section>
+<!-- Biblioteca de Activos: Visual Bento -->
+<section class="col-span-12 lg:col-span-7 glass-panel rounded-xl p-8">
+<div class="flex items-center justify-between mb-8">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-indigo-400">folder_open</span>
+<h2 class="text-xl font-headline font-medium">Biblioteca de Activos</h2>
+</div>
+<button class="text-xs font-bold text-slate-500 hover:text-on-surface tracking-widest uppercase">Gestionar</button>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="group relative aspect-video rounded-lg overflow-hidden glass-panel border border-white/5 cursor-pointer">
+<img alt="Guía de Estilos UI" class="w-full h-full object-cover opacity-50 group-hover:opacity-70 transition-opacity" data-alt="Modern UI style guide showing typography, color palettes and component variants on a dark minimalist interface" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDcsZZeASoak2YN3aSWGCn5XEvb8orFUT82r8vyPPwkqpMQAC5EzIwhLttsrYzXrB7nUM3s2c7Kf4xNtRyc36UlAIDm1ULEObKW14c-P0z9ZreWwZGjrHMen13b_A9Acddt2ywRCe6VKu-xxLkAifa4nYseboFmVrwe2RibQS05Kn6Z4l9-MOGmMHYS3jnS8s_nGVf6Q2Vu6Qhww-kjNDNqU2KrRF4bZuF1BbfV8q-qNyv2lUIyIu8d_AYmwJcB8kR6u0Ep0Ip6_XM"/>
+<div class="absolute inset-0 p-4 flex flex-col justify-end bg-gradient-to-t from-black/80 to-transparent">
+<h4 class="text-sm font-bold">Guía de Estilos v2.0</h4>
+<p class="text-[10px] text-slate-400 uppercase tracking-widest">PDF • 12MB</p>
+</div>
+</div>
+<div class="group relative aspect-video rounded-lg overflow-hidden glass-panel border border-white/5 cursor-pointer">
+<img alt="Figma Community Kit" class="w-full h-full object-cover opacity-50 group-hover:opacity-70 transition-opacity" data-alt="abstract tech visualization of connected nodes and vibrant blue and purple neon light streaks on dark background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCIHZeoPDq4sTikzJGbv1v836lMcP3JWKaOpwf1jMpcKLmXHZZiGzxJjEI3vb_6CBKQpwQlKJich-zNqA4NCllFMqTgOurC95HGyMCU-SO_1T38ZKQ0b5bgumsQvK9ls8yzXVInHL3DML3IrYeLTJ_mijgZmEvuNGdzq3OCNRMogMEO2QohP_1_qaZNhYXWk3r4fRrHfeHNv4witKTYMBb1wmBj9tZ9NIOhaScDzDUak0kwoiniDWbqh09mTaWcuPkcYtD7eZTjFWE"/>
+<div class="absolute inset-0 p-4 flex flex-col justify-end bg-gradient-to-t from-black/80 to-transparent">
+<h4 class="text-sm font-bold">Figma Master Kit</h4>
+<p class="text-[10px] text-slate-400 uppercase tracking-widest">FIG • 45MB</p>
+</div>
+</div>
+<div class="group relative p-4 rounded-lg bg-white/5 hover:bg-white/10 transition-all border border-white/5 cursor-pointer flex items-center gap-4 col-span-2">
+<div class="w-12 h-12 rounded bg-indigo-500/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-indigo-400">video_file</span>
+</div>
+<div class="flex-1">
+<h4 class="text-sm font-bold">Introducción al curso (Grabación)</h4>
+<p class="text-xs text-slate-500">MP4 • 1.2GB • Subido hace 2 días</p>
+</div>
+<span class="material-symbols-outlined text-slate-500">download</span>
+</div>
+</div>
+</section>
+</div>
+<!-- Footer / Credits -->
+<footer class="max-w-6xl mx-auto mt-20 pt-8 border-t border-white/5 flex justify-between items-center text-slate-600">
+<p class="text-xs font-body">© 2026 Epixum. Todos los derechos reservados.</p>
+<div class="flex gap-6">
+<a class="text-xs hover:text-indigo-400 transition-colors" href="#">Privacidad</a>
+<a class="text-xs hover:text-indigo-400 transition-colors" href="#">Términos</a>
+<a class="text-xs hover:text-indigo-400 transition-colors" href="#">Ayuda</a>
+</div>
+</footer>
+</main>
+</body></html>
