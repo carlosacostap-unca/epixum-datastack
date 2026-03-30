@@ -1,0 +1,142 @@
+import { getCourse, getClass, getLinks } from "@/lib/data";
+import { getCurrentUser } from "@/lib/pocketbase-server";
+import { redirect } from "next/navigation";
+import Link from "next/link";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
+import ResourceList from "./ResourceList";
+
+export default async function TeacherClassManagementPage(props: { params: Promise<{ id: string, classId: string }> }) {
+  const params = await props.params;
+  const user = await getCurrentUser();
+  if (!user || user.role !== "docente") {
+    redirect("/");
+  }
+
+  const course = await getCourse(params.id);
+  if (!course) {
+    redirect("/docentes");
+  }
+
+  const classData = await getClass(params.classId);
+  if (!classData || classData.course !== course.id) {
+    redirect(`/docentes/cursos/${course.id}`);
+  }
+
+  const links = await getLinks(classData.id, 'class');
+
+  return (
+    <div className="flex-1 p-12 overflow-y-auto w-full h-full">
+      {/* Back button */}
+      <Link 
+        href={`/docentes/cursos/${course.id}`} 
+        className="inline-flex items-center gap-2 text-[var(--color-on-surface-variant)] hover:text-[var(--color-primary)] transition-colors mb-12 group"
+      >
+        <span className="material-symbols-outlined group-hover:-translate-x-1 transition-transform">arrow_back</span>
+        <span className="font-bold text-sm tracking-widest uppercase">Volver al curso</span>
+      </Link>
+
+      {/* Hero Section */}
+      <header className="mb-16">
+        <div className="flex items-center gap-3 mb-8">
+          <span className="w-2 h-2 rounded-full bg-[var(--color-primary)] shadow-[0_0_10px_var(--color-primary)]"></span>
+          <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--color-on-surface-variant)]">
+            Gestión de Clase
+          </span>
+          <span className="px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest ml-4 bg-[var(--color-surface-container-highest)] text-[var(--color-on-surface-variant)]">
+            {course.title}
+          </span>
+        </div>
+        
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
+          <div>
+            <h1 className="text-5xl font-headline tracking-tight text-[var(--color-on-surface)] mb-6 leading-tight">
+              {classData.title}
+            </h1>
+            
+            <div className="flex flex-wrap items-center gap-6 text-[var(--color-on-surface-variant)]">
+              <div className="flex items-center gap-2 bg-[var(--color-surface-container-low)] px-4 py-2 rounded-full border border-[var(--color-outline-variant)]">
+                <span className="material-symbols-outlined text-[18px] text-[var(--color-primary)]">calendar_today</span>
+                <span className="font-medium text-sm">
+                  {classData.date ? format(new Date(classData.date), "EEEE d 'de' MMMM", { locale: es }) : 'Sin fecha'}
+                </span>
+              </div>
+              
+              {classData.date && (
+                <div className="flex items-center gap-2 bg-[var(--color-surface-container-low)] px-4 py-2 rounded-full border border-[var(--color-outline-variant)]">
+                  <span className="material-symbols-outlined text-[18px] text-[var(--color-primary)]">schedule</span>
+                  <span className="font-medium text-sm">
+                    {format(new Date(classData.date), "HH:mm", { locale: es })} hs
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="flex items-center gap-4">
+            <button className="px-6 py-3 bg-[var(--color-surface-container-highest)] text-[var(--color-on-surface)] rounded-full hover:text-[var(--color-primary)] hover:bg-[var(--color-surface-container-high)] transition-colors font-bold text-sm flex items-center gap-2">
+              <span className="material-symbols-outlined text-[18px]">edit</span>
+              <span>Editar Info</span>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content Area */}
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-12">
+        {/* Main Details */}
+        <div className="xl:col-span-2 flex flex-col gap-12">
+          {/* Description */}
+          <section className="bg-[var(--color-surface-container-low)] rounded-[2.5rem] p-10 border border-[var(--color-outline-variant)] relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-32 h-32 bg-[var(--color-primary)]/5 blur-[40px] -z-10 rounded-full pointer-events-none"></div>
+            <h2 className="text-xl font-bold text-[var(--color-on-surface)] mb-6 flex items-center gap-2">
+              <span className="material-symbols-outlined text-[var(--color-primary)]">description</span>
+              Descripción de la clase
+            </h2>
+            {classData.description ? (
+              <div className="text-[var(--color-on-surface-variant)] leading-relaxed whitespace-pre-wrap text-lg">
+                {classData.description}
+              </div>
+            ) : (
+              <p className="text-[var(--color-on-surface-variant)]/60 italic">No se ha añadido una descripción para esta clase.</p>
+            )}
+          </section>
+
+          {/* Resources */}
+          <ResourceList links={links} classId={classData.id} />
+        </div>
+
+        {/* Sidebar Actions / Info */}
+        <div className="flex flex-col gap-8">
+          {/* Actions Card */}
+          <div className="bg-[var(--color-surface-container-low)] rounded-[2.5rem] p-8 border border-[var(--color-outline-variant)] flex flex-col gap-4">
+            <h3 className="text-sm font-bold uppercase tracking-widest text-[var(--color-on-surface-variant)] mb-2">Herramientas</h3>
+            
+            <Link 
+              href={`/docentes/cursos/${course.id}/clases/${classData.id}/recursos/nuevo`}
+              className="w-full flex items-center justify-between p-4 rounded-2xl bg-[var(--color-surface-container)] hover:bg-[var(--color-surface-container-high)] transition-colors group"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-[var(--color-surface-container-highest)] flex items-center justify-center group-hover:bg-[var(--color-primary)]/10 transition-colors">
+                  <span className="material-symbols-outlined text-[var(--color-on-surface-variant)] group-hover:text-[var(--color-primary)] transition-colors">attach_file</span>
+                </div>
+                <span className="font-bold text-[var(--color-on-surface)]">Añadir Recurso</span>
+              </div>
+              <span className="material-symbols-outlined text-[var(--color-on-surface-variant)]">add</span>
+            </Link>
+
+            <button className="w-full flex items-center justify-between p-4 rounded-2xl bg-[var(--color-surface-container)] hover:bg-[var(--color-surface-container-high)] transition-colors group">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-[var(--color-surface-container-highest)] flex items-center justify-center group-hover:bg-[var(--color-primary)]/10 transition-colors">
+                  <span className="material-symbols-outlined text-[var(--color-on-surface-variant)] group-hover:text-[var(--color-primary)] transition-colors">assignment</span>
+                </div>
+                <span className="font-bold text-[var(--color-on-surface)]">Añadir Trabajo Práctico</span>
+              </div>
+              <span className="material-symbols-outlined text-[var(--color-on-surface-variant)]">add</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

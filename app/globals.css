@@ -25,6 +25,7 @@
   --color-on-surface: #ffffff;
   --color-on-surface-variant: #adaaaa;
   --color-outline-variant: rgba(255, 255, 255, 0.15); /* Ghost Border */
+  --color-error: #ef4444;
   
   /* Fonts */
   --font-headline: var(--font-manrope), sans-serif;

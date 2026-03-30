@@ -53,6 +53,7 @@ export async function updateEnrollmentStatus(id: string, status: "approved" | "r
   try {
     await pb.collection("enrollment_requests").update(id, { status });
     revalidatePath("/admin/enrollments");
+    revalidatePath("/docentes/solicitudes");
     return { success: true };
   } catch (error) {
     console.error("Error al actualizar estado de solicitud:", error);

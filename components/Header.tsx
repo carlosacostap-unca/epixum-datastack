@@ -54,7 +54,12 @@ export default function Header() {
     return null;
   }
 
-  // Hide while loading to prevent flashing the header for docentes
+  // Hide header for specific routes that have their own layout (like docentes dashboard)
+  if (pathname.startsWith("/docentes")) {
+    return null;
+  }
+
+  // Hide while loading to prevent flashing the header for courses
   if (isLoading && (pathname === "/" || pathname.startsWith("/courses/"))) {
     return null;
   }

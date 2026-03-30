@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import pb from "@/lib/pocketbase";
 
-export default function LogoutButton({ className }: { className?: string }) {
+export default function LogoutButton({ className, iconOnly }: { className?: string, iconOnly?: boolean }) {
   const router = useRouter();
 
   const handleLogout = () => {
@@ -16,7 +16,7 @@ export default function LogoutButton({ className }: { className?: string }) {
   return (
     <button onClick={handleLogout} className={className}>
       <span className="material-symbols-outlined">logout</span>
-      <span>Cerrar Sesión</span>
+      {!iconOnly && <span>Cerrar Sesión</span>}
     </button>
   );
 }

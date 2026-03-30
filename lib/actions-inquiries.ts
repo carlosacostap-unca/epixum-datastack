@@ -113,7 +113,7 @@ export async function createInquiry(data: { title: string; description: string; 
     revalidatePath("/inquiries");
     if (data.classId) revalidatePath(`/classes/${data.classId}`);
     if (data.assignmentId) revalidatePath(`/assignments/${data.assignmentId}`);
-    if (data.courseId) revalidatePath(`/courses/${data.courseId}/inquiries`);
+    if (data.courseId) revalidatePath(`/courses/${data.courseId}`);
     
     return { success: true, data: record };
   } catch (error: any) {

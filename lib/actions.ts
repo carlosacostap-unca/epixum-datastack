@@ -163,25 +163,17 @@ export async function createClassForCourse(courseId: string, formData: FormData)
       dateObj = new Date(dateTimeStr).toISOString();
     }
 
+    // Create the class
     const data: any = {
       title,
       description,
       date: dateObj,
+      course: courseId, // Relacionar directamente la clase con el curso
     };
     
-    // Create the class
     const newClass = await pb.collection('classes').create(data);
     
-    // Get the course
-    const course = await pb.collection('courses').getOne(courseId);
-    
-    // Append the new class id
-    const updatedClasses = [...(course.classes || []), newClass.id];
-    
-    // Update the course
-    await pb.collection('courses').update(courseId, { classes: updatedClasses });
-    
-    revalidatePath(`/courses/${courseId}`);
+    revalidatePath(`/docentes/cursos/${courseId}`);
     return { success: true, classId: newClass.id };
   } catch (error) {
     console.error('Failed to create class for course:', error);
@@ -316,7 +308,6 @@ export async function createAssignmentForCourse(courseId: string, formData: Form
     await pb.collection('courses').update(courseId, { assignments: updatedAssignments });
     
     revalidatePath(`/courses/${courseId}`);
-    revalidatePath(`/courses/${courseId}/assignments`);
     return { success: true, assignmentId: newAssignment.id };
   } catch (error) {
     console.error('Failed to create assignment for course:', error);
@@ -466,7 +457,10 @@ export async function createLink(formData: FormData) {
     
     await pb.collection('links').create(data);
     
-    if (classId) revalidatePath(`/classes/${classId}`);
+    if (classId) {
+      revalidatePath(`/classes/${classId}`);
+      revalidatePath('/docentes', 'layout'); // Revalidate all teacher routes
+    }
     if (assignmentId) revalidatePath(`/assignments/${assignmentId}`);
     
     return { success: true };
@@ -499,7 +493,10 @@ export async function updateLink(linkId: string, formData: FormData) {
 
     await pb.collection('links').update(linkId, data);
     
-    if (classId) revalidatePath(`/classes/${classId}`);
+    if (classId) {
+      revalidatePath(`/classes/${classId}`);
+      revalidatePath('/docentes', 'layout');
+    }
     if (assignmentId) revalidatePath(`/assignments/${assignmentId}`);
     
     return { success: true };
@@ -521,9 +518,14 @@ export async function deleteLink(linkId: string, parentId?: string, parentType?:
     await pb.collection('links').delete(linkId);
     
     if (parentId && parentType) {
-        if (parentType === 'class') revalidatePath(`/classes/${parentId}`);
+        if (parentType === 'class') {
+          revalidatePath(`/classes/${parentId}`);
+          revalidatePath('/docentes', 'layout'); // Revalidate all teacher routes
+        }
         if (parentType === 'assignment') revalidatePath(`/assignments/${parentId}`);
     }
+    // Si no se pasaron parentId/parentType pero igual queremos asegurar que se actualice la UI docente
+    revalidatePath('/docentes', 'layout');
     
     return { success: true };
   } catch (error) {

@@ -33,7 +33,7 @@ export default function CreateInquiryForm({ initialClassId, initialAssignmentId,
   }, [selectedAssignmentId]);
 
   const cancelHref = courseId
-    ? `/courses/${courseId}/inquiries`
+    ? `/courses/${courseId}`
     : initialClassId 
       ? `/classes/${initialClassId}` 
       : initialAssignmentId 
@@ -62,15 +62,15 @@ export default function CreateInquiryForm({ initialClassId, initialAssignmentId,
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-10">
       {error && (
-        <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-xl text-sm">
+        <div className="p-4 bg-[var(--color-error)]/10 border border-[var(--color-error)]/50 rounded-2xl text-[var(--color-error)] text-sm">
           {error}
         </div>
       )}
 
       <div>
-        <label htmlFor="title" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
+        <label htmlFor="title" className="block text-[10px] font-bold tracking-[0.2em] uppercase text-[var(--color-on-surface-variant)] mb-2">
           Título
         </label>
         <input
@@ -79,13 +79,13 @@ export default function CreateInquiryForm({ initialClassId, initialAssignmentId,
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           required
-          className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-700 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100"
+          className="block w-full bg-[var(--color-surface-container)] border-0 rounded-2xl px-5 py-4 text-on-surface focus:ring-1 focus:ring-[var(--color-primary)] transition-all duration-300 outline-none placeholder:text-white/20"
           placeholder="Resumen breve de tu consulta"
         />
       </div>
 
       <div>
-        <label htmlFor="description" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
+        <label htmlFor="description" className="block text-[10px] font-bold tracking-[0.2em] uppercase text-[var(--color-on-surface-variant)] mb-2">
           Descripción detallada
         </label>
         <textarea
@@ -94,14 +94,14 @@ export default function CreateInquiryForm({ initialClassId, initialAssignmentId,
           onChange={(e) => setDescription(e.target.value)}
           required
           rows={5}
-          className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-700 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100"
+          className="block w-full bg-[var(--color-surface-container)] border-0 rounded-2xl px-5 py-4 text-on-surface focus:ring-1 focus:ring-[var(--color-primary)] transition-all duration-300 outline-none placeholder:text-white/20"
           placeholder="Describe tu duda con el mayor detalle posible..."
         />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div>
-          <label htmlFor="class" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
+          <label htmlFor="class" className="block text-[10px] font-bold tracking-[0.2em] uppercase text-[var(--color-on-surface-variant)] mb-2">
             Relacionado con la clase (opcional)
           </label>
           <select
@@ -109,7 +109,7 @@ export default function CreateInquiryForm({ initialClassId, initialAssignmentId,
             value={selectedClassId}
             onChange={(e) => setSelectedClassId(e.target.value)}
             disabled={!!selectedAssignmentId}
-            className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-700 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 disabled:opacity-50"
+            className="block w-full bg-[var(--color-surface-container)] border-0 rounded-2xl px-5 py-4 text-on-surface focus:ring-1 focus:ring-[var(--color-primary)] transition-all duration-300 outline-none disabled:opacity-50"
           >
             <option value="">-- Seleccionar clase --</option>
             {classes.map((c) => (
@@ -121,15 +121,15 @@ export default function CreateInquiryForm({ initialClassId, initialAssignmentId,
         </div>
 
         <div>
-          <label htmlFor="assignment" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
-            Relacionado con el trabajo práctico (opcional)
+          <label htmlFor="assignment" className="block text-[10px] font-bold tracking-[0.2em] uppercase text-[var(--color-on-surface-variant)] mb-2">
+            Relacionado con el TP (opcional)
           </label>
           <select
             id="assignment"
             value={selectedAssignmentId}
             onChange={(e) => setSelectedAssignmentId(e.target.value)}
             disabled={!!selectedClassId}
-            className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-700 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 disabled:opacity-50"
+            className="block w-full bg-[var(--color-surface-container)] border-0 rounded-2xl px-5 py-4 text-on-surface focus:ring-1 focus:ring-[var(--color-primary)] transition-all duration-300 outline-none disabled:opacity-50"
           >
             <option value="">-- Seleccionar TP --</option>
             {assignments.map((a) => (
@@ -141,19 +141,26 @@ export default function CreateInquiryForm({ initialClassId, initialAssignmentId,
         </div>
       </div>
 
-      <div className="flex justify-end gap-3 pt-4">
+      <div className="flex items-center justify-end gap-6 pt-4">
         <Link
           href={cancelHref}
-          className="px-4 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-md transition-colors"
+          className="px-8 py-3 rounded-full text-[var(--color-on-surface-variant)] hover:text-on-surface hover:bg-[var(--color-surface-container-highest)] transition-colors font-semibold text-sm"
         >
           Cancelar
         </Link>
         <button
           type="submit"
           disabled={isLoading}
-          className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md shadow-sm transition-colors disabled:opacity-50"
+          className="px-10 py-3 rounded-full bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-container)] text-[#000000] font-bold text-sm shadow-[0_0_20px_rgba(63,255,139,0.2)] hover:opacity-90 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 disabled:pointer-events-none flex items-center justify-center gap-2"
         >
-          {isLoading ? "Enviando..." : "Crear Consulta"}
+          {isLoading ? (
+            <>
+              <span className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin"></span>
+              Enviando...
+            </>
+          ) : (
+            "Crear Consulta"
+          )}
         </button>
       </div>
     </form>

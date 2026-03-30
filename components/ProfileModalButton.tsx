@@ -78,11 +78,11 @@ export default function ProfileModalButton({ user, pocketbaseUrl, children, clas
       {/* Trigger Button */}
       <button 
         onClick={() => setIsOpen(true)}
-        className={className || "w-full flex items-center gap-3 text-left hover:bg-white/5 p-2 -ml-2 rounded-xl transition-colors cursor-pointer group"}
+        className={className || "w-full flex items-center gap-3 text-left hover:bg-[var(--color-surface-container)] p-2 -ml-2 rounded-[2rem] transition-colors cursor-pointer group"}
       >
         {children ? children : (
           <>
-            <div className="h-10 w-10 rounded-full border border-indigo-500/30 overflow-hidden group-hover:border-indigo-400 transition-colors">
+            <div className="h-10 w-10 rounded-full border-2 border-[var(--color-surface-container-highest)] overflow-hidden group-hover:border-[var(--color-primary)] transition-colors">
               <img 
                 alt="Avatar" 
                 className="h-full w-full object-cover" 
@@ -90,10 +90,10 @@ export default function ProfileModalButton({ user, pocketbaseUrl, children, clas
               />
             </div>
             <div>
-              <h2 className="text-indigo-500 font-black text-sm uppercase tracking-widest font-headline line-clamp-1 group-hover:text-indigo-400 transition-colors">
+              <h2 className="text-[var(--color-primary)] font-black text-sm uppercase tracking-widest font-headline line-clamp-1 group-hover:opacity-80 transition-opacity">
                 {user.name || "Usuario"}
               </h2>
-              <p className="text-slate-400 text-[11px] font-bold tracking-widest uppercase group-hover:text-slate-300 transition-colors">
+              <p className="text-[var(--color-on-surface-variant)] text-[11px] font-bold tracking-widest uppercase group-hover:text-[var(--color-on-surface)] transition-colors">
                 Mi Perfil
               </p>
             </div>
@@ -114,35 +114,35 @@ export default function ProfileModalButton({ user, pocketbaseUrl, children, clas
 
           {/* Modal / Sidebar */}
           <div 
-            className={`fixed top-0 right-0 h-screen w-full sm:w-[400px] bg-slate-950/60 backdrop-blur-2xl border-l border-white/5 shadow-2xl z-[101] transform transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] flex flex-col ${
+            className={`fixed top-0 right-0 h-screen w-full sm:w-[400px] bg-[var(--color-surface-container-low)]/90 backdrop-blur-[30px] border-l-4 border-[var(--color-surface-container)] shadow-2xl z-[101] transform transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] flex flex-col ${
               isOpen ? "translate-x-0" : "translate-x-full"
             }`}
           >
             {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-white/5">
-          <h2 className="text-lg font-headline font-bold text-white tracking-wide">
+        <div className="flex items-center justify-between p-8 border-b-4 border-[var(--color-surface-container)]">
+          <h2 className="text-lg font-headline font-bold text-[var(--color-on-surface)] tracking-wide">
             {isEditing ? "Editar Perfil" : "Detalles de Usuario"}
           </h2>
           <button 
             onClick={handleClose}
-            className="p-2 text-slate-400 hover:text-white hover:bg-white/10 rounded-full transition-colors"
+            className="p-2 text-[var(--color-on-surface-variant)] hover:text-[var(--color-on-surface)] hover:bg-[var(--color-surface-container-highest)] rounded-full transition-colors"
           >
             <span className="material-symbols-outlined text-xl">close</span>
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-6 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
+        <div className="flex-1 overflow-y-auto p-8 scrollbar-thin scrollbar-thumb-[var(--color-surface-container-highest)] scrollbar-track-transparent">
           {isEditing ? (
             <div className="space-y-6">
               {error && (
-                <div className="p-3 rounded-lg bg-red-500/20 border border-red-500/50 text-red-200 text-sm">
+                <div className="p-4 rounded-xl bg-[var(--color-error)]/10 text-[var(--color-error)] text-sm">
                   {error}
                 </div>
               )}
               
-              <div className="space-y-4">
+              <div className="space-y-6">
                 <div>
-                  <label className="block text-[11px] font-label font-bold text-slate-400 uppercase tracking-widest mb-1.5">
+                  <label className="block text-[11px] font-label font-bold text-[var(--color-on-surface-variant)] uppercase tracking-widest mb-2">
                     Nombre
                   </label>
                   <input 
@@ -150,11 +150,11 @@ export default function ProfileModalButton({ user, pocketbaseUrl, children, clas
                     name="firstName" 
                     value={formData.firstName} 
                     onChange={handleChange}
-                    className="w-full bg-slate-900/50 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-indigo-500/50 focus:bg-slate-900/80 transition-all"
+                    className="w-full bg-[var(--color-surface-container)] border-none rounded-xl px-4 py-3 text-[var(--color-on-surface)] text-sm focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)] transition-all"
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-label font-bold text-slate-400 uppercase tracking-widest mb-1.5">
+                  <label className="block text-[11px] font-label font-bold text-[var(--color-on-surface-variant)] uppercase tracking-widest mb-2">
                     Apellido
                   </label>
                   <input 
@@ -162,11 +162,11 @@ export default function ProfileModalButton({ user, pocketbaseUrl, children, clas
                     name="lastName" 
                     value={formData.lastName} 
                     onChange={handleChange}
-                    className="w-full bg-slate-900/50 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-indigo-500/50 focus:bg-slate-900/80 transition-all"
+                    className="w-full bg-[var(--color-surface-container)] border-none rounded-xl px-4 py-3 text-[var(--color-on-surface)] text-sm focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)] transition-all"
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-label font-bold text-slate-400 uppercase tracking-widest mb-1.5">
+                  <label className="block text-[11px] font-label font-bold text-[var(--color-on-surface-variant)] uppercase tracking-widest mb-2">
                     Teléfono
                   </label>
                   <input 
@@ -174,11 +174,11 @@ export default function ProfileModalButton({ user, pocketbaseUrl, children, clas
                     name="phone" 
                     value={formData.phone} 
                     onChange={handleChange}
-                    className="w-full bg-slate-900/50 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-indigo-500/50 focus:bg-slate-900/80 transition-all"
+                    className="w-full bg-[var(--color-surface-container)] border-none rounded-xl px-4 py-3 text-[var(--color-on-surface)] text-sm focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)] transition-all"
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-label font-bold text-slate-400 uppercase tracking-widest mb-1.5">
+                  <label className="block text-[11px] font-label font-bold text-[var(--color-on-surface-variant)] uppercase tracking-widest mb-2">
                     DNI
                   </label>
                   <input 
@@ -186,11 +186,11 @@ export default function ProfileModalButton({ user, pocketbaseUrl, children, clas
                     name="dni" 
                     value={formData.dni} 
                     onChange={handleChange}
-                    className="w-full bg-slate-900/50 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-indigo-500/50 focus:bg-slate-900/80 transition-all"
+                    className="w-full bg-[var(--color-surface-container)] border-none rounded-xl px-4 py-3 text-[var(--color-on-surface)] text-sm focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)] transition-all"
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-label font-bold text-slate-400 uppercase tracking-widest mb-1.5">
+                  <label className="block text-[11px] font-label font-bold text-[var(--color-on-surface-variant)] uppercase tracking-widest mb-2">
                     Fecha de Nacimiento
                   </label>
                   <input 
@@ -198,7 +198,7 @@ export default function ProfileModalButton({ user, pocketbaseUrl, children, clas
                     name="birthDate" 
                     value={formData.birthDate} 
                     onChange={handleChange}
-                    className="w-full bg-slate-900/50 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-indigo-500/50 focus:bg-slate-900/80 transition-all"
+                    className="w-full bg-[var(--color-surface-container)] border-none rounded-xl px-4 py-3 text-[var(--color-on-surface)] text-sm focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)] transition-all [color-scheme:dark]"
                   />
                 </div>
               </div>
@@ -207,9 +207,9 @@ export default function ProfileModalButton({ user, pocketbaseUrl, children, clas
             <>
               {/* Avatar & Name */}
               <div className="flex flex-col items-center mb-10">
-                <div className="relative mb-4">
-                  <div className="absolute inset-0 bg-indigo-500/20 rounded-full blur-xl"></div>
-                  <div className="h-28 w-28 rounded-full border-2 border-indigo-500/50 overflow-hidden relative shadow-[0_0_30px_rgba(79,70,229,0.2)]">
+                <div className="relative mb-6">
+                  <div className="absolute inset-0 bg-[var(--color-primary)]/20 rounded-full blur-xl"></div>
+                  <div className="h-28 w-28 rounded-full border-4 border-[var(--color-surface-container-highest)] overflow-hidden relative shadow-[0_0_30px_rgba(63,255,139,0.1)]">
                     <img 
                       alt="Avatar Completo" 
                       className="h-full w-full object-cover" 
@@ -217,46 +217,46 @@ export default function ProfileModalButton({ user, pocketbaseUrl, children, clas
                     />
                   </div>
                 </div>
-                <h3 className="text-2xl font-headline font-bold text-white mb-2">{user.name || "Usuario"}</h3>
-                <span className="px-3 py-1 bg-indigo-500/20 border border-indigo-500/30 text-indigo-400 rounded-lg text-xs font-bold tracking-widest uppercase">
+                <h3 className="text-2xl font-headline font-bold text-[var(--color-on-surface)] mb-2">{user.name || "Usuario"}</h3>
+                <span className="px-4 py-1.5 bg-[var(--color-surface-container-highest)] text-[var(--color-primary)] rounded-full text-[10px] font-bold tracking-widest uppercase">
                   {roleDisplay}
                 </span>
               </div>
 
               {/* Contact Info */}
-              <div className="mb-8">
-                <h4 className="text-[11px] font-label font-bold text-slate-500 uppercase tracking-widest mb-3">
+              <div className="mb-10">
+                <h4 className="text-[11px] font-label font-bold text-[var(--color-on-surface-variant)] uppercase tracking-widest mb-4">
                   Información de Contacto
                 </h4>
-                <div className="glass-panel rounded-xl p-1 bg-white/5 border border-white/5">
-                  <div className="flex items-center gap-4 p-3 border-b border-white/5">
-                    <span className="material-symbols-outlined text-slate-400 text-[20px]">mail</span>
-                    <span className="text-sm text-slate-200">{user.email || "No especificado"}</span>
+                <div className="glass-panel rounded-[2rem] p-2 bg-[var(--color-surface-container)]">
+                  <div className="flex items-center gap-4 p-4 border-b-2 border-[var(--color-surface-container-highest)]">
+                    <span className="material-symbols-outlined text-[var(--color-primary)] text-[20px]">mail</span>
+                    <span className="text-sm text-[var(--color-on-surface)]">{user.email || "No especificado"}</span>
                   </div>
-                  <div className="flex items-center gap-4 p-3 border-b border-white/5">
-                    <span className="material-symbols-outlined text-slate-400 text-[20px]">call</span>
-                    <span className="text-sm text-slate-200">{user.phone || "No especificado"}</span>
+                  <div className="flex items-center gap-4 p-4 border-b-2 border-[var(--color-surface-container-highest)]">
+                    <span className="material-symbols-outlined text-[var(--color-primary)] text-[20px]">call</span>
+                    <span className="text-sm text-[var(--color-on-surface)]">{user.phone || "No especificado"}</span>
                   </div>
-                  <div className="flex items-center gap-4 p-3">
-                    <span className="material-symbols-outlined text-slate-400 text-[20px]">badge</span>
-                    <span className="text-sm text-slate-200">{user.dni ? `DNI: ${user.dni}` : "DNI no especificado"}</span>
+                  <div className="flex items-center gap-4 p-4">
+                    <span className="material-symbols-outlined text-[var(--color-primary)] text-[20px]">badge</span>
+                    <span className="text-sm text-[var(--color-on-surface)]">{user.dni ? `DNI: ${user.dni}` : "DNI no especificado"}</span>
                   </div>
                 </div>
               </div>
 
               {/* Additional Info */}
               <div className="mb-8">
-                <h4 className="text-[11px] font-label font-bold text-slate-500 uppercase tracking-widest mb-3">
+                <h4 className="text-[11px] font-label font-bold text-[var(--color-on-surface-variant)] uppercase tracking-widest mb-4">
                   Datos Adicionales
                 </h4>
-                <div className="glass-panel rounded-xl p-1 bg-white/5 border border-white/5">
-                  <div className="flex items-center gap-4 p-3 border-b border-white/5">
-                    <span className="material-symbols-outlined text-slate-400 text-[20px]">account_circle</span>
-                    <span className="text-sm text-slate-200">@{user.username || "usuario"}</span>
+                <div className="glass-panel rounded-[2rem] p-2 bg-[var(--color-surface-container)]">
+                  <div className="flex items-center gap-4 p-4 border-b-2 border-[var(--color-surface-container-highest)]">
+                    <span className="material-symbols-outlined text-[var(--color-primary)] text-[20px]">account_circle</span>
+                    <span className="text-sm text-[var(--color-on-surface)]">@{user.username || "usuario"}</span>
                   </div>
-                  <div className="flex items-center gap-4 p-3">
-                    <span className="material-symbols-outlined text-slate-400 text-[20px]">calendar_month</span>
-                    <span className="text-sm text-slate-200">
+                  <div className="flex items-center gap-4 p-4">
+                    <span className="material-symbols-outlined text-[var(--color-primary)] text-[20px]">calendar_month</span>
+                    <span className="text-sm text-[var(--color-on-surface)]">
                       {user.birthDate 
                         ? new Date(user.birthDate).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }) 
                         : "Fecha de nacimiento no especificada"}
@@ -269,7 +269,7 @@ export default function ProfileModalButton({ user, pocketbaseUrl, children, clas
         </div>
 
         {/* Footer actions */}
-        <div className="p-6 border-t border-white/5 flex gap-4 bg-transparent">
+        <div className="p-8 border-t-4 border-[var(--color-surface-container)] flex gap-4 bg-[var(--color-surface-container-low)]">
           {isEditing ? (
             <>
               <button 
@@ -278,14 +278,14 @@ export default function ProfileModalButton({ user, pocketbaseUrl, children, clas
                   setError("");
                 }}
                 disabled={isSaving}
-                className="flex-1 py-3 px-4 rounded-xl border border-white/5 text-slate-300 text-sm font-bold tracking-wide hover:bg-white/5 transition-colors disabled:opacity-50"
+                className="flex-1 py-4 px-6 rounded-[2rem] border-2 border-[var(--color-surface-container-highest)] text-[var(--color-on-surface-variant)] text-sm font-bold tracking-widest uppercase hover:bg-[var(--color-surface-container)] hover:text-[var(--color-on-surface)] transition-colors disabled:opacity-50"
               >
                 Cancelar
               </button>
               <button 
                 onClick={handleSave}
                 disabled={isSaving}
-                className="flex-1 py-3 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-bold tracking-wide transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+                className="flex-1 py-4 px-6 rounded-[2rem] bg-[var(--color-primary)] hover:opacity-80 text-[var(--color-on-primary)] text-sm font-bold tracking-widest uppercase transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
               >
                 {isSaving ? (
                   <>
@@ -300,8 +300,9 @@ export default function ProfileModalButton({ user, pocketbaseUrl, children, clas
           ) : (
             <button 
               onClick={() => setIsEditing(true)}
-              className="flex-1 py-3 px-4 rounded-xl border border-white/5 text-white text-sm font-bold tracking-wide hover:bg-white/5 transition-colors"
+              className="w-full py-4 px-6 rounded-[2rem] bg-[var(--color-surface-container)] hover:bg-[var(--color-surface-container-highest)] text-[var(--color-primary)] text-sm font-bold tracking-widest uppercase transition-colors flex items-center justify-center gap-2"
             >
+              <span className="material-symbols-outlined text-[18px]">edit</span>
               Editar Perfil
             </button>
           )}

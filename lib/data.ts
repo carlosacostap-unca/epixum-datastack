@@ -93,6 +93,15 @@ export async function getAllClasses() {
     return records;
 }
 
+export async function getClassesByCourse(courseId: string) {
+    const pb = await createServerClient();
+    const records = await pb.collection('classes').getFullList<Class>({
+        filter: `course = "${courseId}"`,
+        sort: '-date', // Ordenar por fecha descendente
+    });
+    return records;
+}
+
 export async function getClass(id: string) {
   const pb = await createServerClient();
   const record = await pb.collection('classes').getOne<Class>(id);
