@@ -74,10 +74,10 @@ export default async function TeacherClassManagementPage(props: { params: Promis
           </div>
 
           <div className="flex items-center gap-4">
-            <button className="px-6 py-3 bg-[var(--color-surface-container-highest)] text-[var(--color-on-surface)] rounded-full hover:text-[var(--color-primary)] hover:bg-[var(--color-surface-container-high)] transition-colors font-bold text-sm flex items-center gap-2">
+            <Link href={`/docentes/cursos/${course.id}/clases/${classData.id}/editar`} className="px-6 py-3 bg-[var(--color-surface-container-highest)] text-[var(--color-on-surface)] rounded-full hover:text-[var(--color-primary)] hover:bg-[var(--color-surface-container-high)] transition-colors font-bold text-sm flex items-center gap-2">
               <span className="material-symbols-outlined text-[18px]">edit</span>
               <span>Editar Info</span>
-            </button>
+            </Link>
           </div>
         </div>
       </header>

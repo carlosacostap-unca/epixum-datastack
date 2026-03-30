@@ -1,13 +1,29 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import pb from "@/lib/pocketbase";
 import Link from "next/link";
 import { setAuthCookieAndRedirect } from "@/lib/actions-auth";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+
+  // Check if already logged in
+  useEffect(() => {
+    if (pb.authStore.isValid && pb.authStore.model) {
+      const role = pb.authStore.model.role;
+      if (role === "docente") {
+        router.push("/docentes");
+      } else if (role === "admin") {
+        router.push("/admin/courses");
+      } else {
+        router.push("/");
+      }
+    }
+  }, [router]);
 
   const handleGoogleLogin = async () => {
     setIsLoading(true);

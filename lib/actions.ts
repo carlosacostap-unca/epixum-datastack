@@ -223,19 +223,27 @@ export async function updateClass(classId: string, formData: FormData) {
 
   const title = formData.get('title') as string;
   const description = formData.get('description') as string;
-  const date = formData.get('date') as string;
+  const dateStr = formData.get('date') as string;
+  const timeStr = formData.get('time') as string;
 
   try {
+    let dateObj = null;
+    if (dateStr) {
+      const dateTimeStr = timeStr ? `${dateStr}T${timeStr}` : `${dateStr}T00:00:00`;
+      dateObj = new Date(dateTimeStr).toISOString();
+    }
+
     const data: any = {
       title,
       description,
+      date: dateObj,
     };
-    if (date) data.date = new Date(date).toISOString();
 
     await pb.collection('classes').update(classId, data);
     
     revalidatePath('/');
     revalidatePath(`/classes/${classId}`);
+    revalidatePath('/docentes', 'layout');
     return { success: true };
   } catch (error) {
     console.error('Failed to update class:', error);

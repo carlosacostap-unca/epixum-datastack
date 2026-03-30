@@ -2,6 +2,7 @@ import { getAllClasses, getTeacherCourses } from "@/lib/data";
 import { Class } from "@/types";
 import Link from "next/link";
 import { createServerClient, getCurrentUser } from "@/lib/pocketbase-server";
+import { redirect } from "next/navigation";
 import FormattedDate from "@/components/FormattedDate";
 import LogoutButton from "@/components/LogoutButton";
 import ProfileModalButton from "@/components/ProfileModalButton";
@@ -11,6 +12,15 @@ export const dynamic = 'force-dynamic';
 
 export default async function Home() {
   const user = await getCurrentUser();
+
+  // Redirect based on role if already logged in
+  if (user) {
+    if (user.role === 'docente') {
+      redirect('/docentes');
+    } else if (user.role === 'admin') {
+      redirect('/admin/courses');
+    }
+  }
 
   // 1. Student View (Navigation Cards)
   if (user && user.role === 'estudiante') {

@@ -34,10 +34,16 @@ export async function createServerClient() {
       if (serverPb.authStore.isValid) {
          try {
            await serverPb.collection('users').authRefresh();
-           console.log("Token refrescado y modelo obtenido:", serverPb.authStore.model?.email);
-         } catch (refreshErr) {
-           console.error("Error al refrescar token:", refreshErr);
-           serverPb.authStore.clear(); // Si falla el refresh, el token no es válido
+           // console.log("Token refrescado y modelo obtenido:", serverPb.authStore.model?.email);
+         } catch (refreshErr: any) {
+           // Solo limpiar la sesión si es un error de autenticación (ej: token inválido/expirado)
+           // Si es un error de red (timeout), mantenemos el token actual que podría seguir siendo válido
+           if (refreshErr?.status === 401 || refreshErr?.status === 403 || refreshErr?.status === 400) {
+             console.error("Token inválido o expirado. Limpiando sesión.");
+             serverPb.authStore.clear(); 
+           } else {
+             console.warn("Advertencia de red al refrescar token (el token actual se mantendrá):", refreshErr?.message || "Timeout/Network error");
+           }
          }
       }
     } catch (e) {
