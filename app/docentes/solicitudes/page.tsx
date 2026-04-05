@@ -27,26 +27,26 @@ export default async function DocenteSolicitudesPage() {
   }
 
   return (
-    <div className="flex-1 p-12 overflow-y-auto w-full h-full">
-      <header className="mb-24 flex flex-col md:flex-row gap-20 items-start justify-between">
+    <div className="flex-1 p-6 md:p-12 overflow-y-auto w-full h-full">
+      <header className="mb-12 md:mb-24 flex flex-col md:flex-row gap-10 md:gap-20 items-start justify-between">
         <div className="max-w-2xl">
-          <div className="flex items-center gap-3 mb-8">
+          <div className="flex items-center gap-3 mb-6 md:mb-8">
             <span className="w-2 h-2 rounded-full bg-[var(--color-primary)] shadow-[0_0_10px_var(--color-primary)]"></span>
             <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--color-on-surface-variant)]">
               Panel Docente
             </span>
           </div>
-          <h1 className="text-6xl font-headline tracking-tight text-[var(--color-on-surface)] mb-6">
+          <h1 className="text-4xl md:text-6xl font-headline tracking-tight text-[var(--color-on-surface)] mb-4 md:mb-6">
             Solicitudes de <span className="text-[var(--color-primary)]">Matrícula</span>
           </h1>
-          <p className="text-[var(--color-on-surface-variant)] text-xl leading-relaxed">
+          <p className="text-[var(--color-on-surface-variant)] text-lg md:text-xl leading-relaxed">
             Revisa y gestiona las solicitudes de los estudiantes que desean inscribirse en los cursos.
           </p>
         </div>
       </header>
 
-      <div className="bg-[var(--color-surface-container-low)] rounded-[3rem] overflow-hidden p-4">
-        <div className="overflow-x-auto bg-[var(--color-surface-container)] rounded-[2rem]">
+      <div className="bg-[var(--color-surface-container-low)] rounded-[2rem] md:rounded-[3rem] overflow-hidden p-2 md:p-4">
+        <div className="overflow-x-auto bg-[var(--color-surface-container)] rounded-[1.5rem] md:rounded-[2rem]">
           <table className="w-full text-left border-collapse min-w-[800px]">
             <thead>
               <tr className="border-b border-transparent">

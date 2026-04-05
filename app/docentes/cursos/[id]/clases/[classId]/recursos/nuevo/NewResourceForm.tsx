@@ -188,17 +188,17 @@ export default function NewResourceForm({ courseId, classId }: NewResourceFormPr
         </div>
       )}
 
-      <div className="flex items-center justify-end gap-4 mt-8 pt-8 border-t border-[var(--color-outline-variant)]">
+      <div className="flex flex-col-reverse sm:flex-row items-center justify-end gap-4 mt-8 pt-8 border-t border-[var(--color-outline-variant)]">
         <Link
           href={`/docentes/cursos/${courseId}/clases/${classId}`}
-          className="px-6 py-3 text-[var(--color-on-surface-variant)] hover:text-[var(--color-on-surface)] font-bold text-sm transition-colors"
+          className="w-full sm:w-auto flex justify-center px-6 py-3 text-[var(--color-on-surface-variant)] hover:text-[var(--color-on-surface)] font-bold text-sm transition-colors"
         >
           Cancelar
         </Link>
         <button
           type="submit"
           disabled={loading}
-          className="px-8 py-3 bg-[var(--color-primary)] text-[var(--color-on-primary)] rounded-full hover:bg-[var(--color-primary)]/90 transition-colors font-bold text-sm flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_20px_var(--color-primary)]/30"
+          className="w-full sm:w-auto px-8 py-3 bg-[var(--color-primary)] text-[var(--color-on-primary)] rounded-full hover:bg-[var(--color-primary)]/90 transition-colors font-bold text-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_20px_var(--color-primary)]/30"
         >
           {loading ? (
             <>

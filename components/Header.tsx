@@ -4,14 +4,16 @@ import { usePathname, useRouter } from "next/navigation";
 import pb from "@/lib/pocketbase";
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { User } from "@/types";
+import { clearAuthCookieAndRedirect } from "@/lib/actions-auth";
 
 export default function Header() {
   const pathname = usePathname();
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
     // Ensure we have the latest auth state from cookie
@@ -27,8 +29,13 @@ export default function Header() {
           // Update cookie
           document.cookie = pb.authStore.exportToCookie({ httpOnly: false });
           setUser(updatedUser as unknown as User);
-        } catch (e) {
-          console.error("Failed to refresh user data", e);
+        } catch (e: any) {
+          if (e?.status === 404 || e?.status === 401 || e?.status === 403) {
+            console.warn("No se pudo actualizar los datos del usuario (posible sesión expirada o falta de permisos).");
+          } else {
+            console.warn("Error de red al intentar actualizar el usuario:", e);
+          }
+          // Fallback to the current user model in the store
           setUser(pb.authStore.model as unknown as User);
         }
       } else {
@@ -76,9 +83,9 @@ export default function Header() {
 
   const handleLogout = () => {
     pb.authStore.clear();
-    document.cookie = "pb_auth=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    router.push("/login");
-    router.refresh();
+    startTransition(() => {
+      clearAuthCookieAndRedirect();
+    });
   };
 
   return (
@@ -136,10 +143,11 @@ export default function Header() {
               </Link>
               <button 
                 onClick={handleLogout}
-                className="text-sm font-medium text-[var(--color-on-surface-variant)] hover:text-[var(--color-on-surface)] transition-colors flex items-center gap-2"
+                disabled={isPending}
+                className="text-sm font-medium text-[var(--color-on-surface-variant)] hover:text-[var(--color-on-surface)] transition-colors flex items-center gap-2 disabled:opacity-50"
               >
-                <span className="material-symbols-outlined text-[1.25rem]">logout</span>
-                <span className="hidden sm:inline">Cerrar Sesión</span>
+                <span className="material-symbols-outlined text-[1.25rem]">{isPending ? "hourglass_empty" : "logout"}</span>
+                <span className="hidden sm:inline">{isPending ? "Cerrando..." : "Cerrar Sesión"}</span>
               </button>
             </div>
           ) : (

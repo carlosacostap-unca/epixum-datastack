@@ -25,3 +25,9 @@ export async function setAuthCookieAndRedirect(token: string, model: any) {
     redirect("/");
   }
 }
+
+export async function clearAuthCookieAndRedirect() {
+  const cookieStore = await cookies();
+  cookieStore.delete("pb_auth");
+  redirect("/login");
+}

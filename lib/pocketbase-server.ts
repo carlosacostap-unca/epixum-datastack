@@ -39,16 +39,16 @@ export async function createServerClient() {
            // Solo limpiar la sesión si es un error de autenticación (ej: token inválido/expirado)
            // Si es un error de red (timeout), mantenemos el token actual que podría seguir siendo válido
            if (refreshErr?.status === 401 || refreshErr?.status === 403 || refreshErr?.status === 400) {
-             console.error("Token inválido o expirado. Limpiando sesión.");
-             serverPb.authStore.clear(); 
-           } else {
-             console.warn("Advertencia de red al refrescar token (el token actual se mantendrá):", refreshErr?.message || "Timeout/Network error");
-           }
-         }
-      }
-    } catch (e) {
-      console.error("Error cargando auth store:", e);
-    }
+            console.warn("Token inválido o expirado. Limpiando sesión.");
+            serverPb.authStore.clear(); 
+          } else {
+            console.warn("Advertencia de red al refrescar token (el token actual se mantendrá):", refreshErr?.message || "Timeout/Network error");
+          }
+        }
+     }
+   } catch (e) {
+     console.warn("Error cargando auth store:", e);
+   }
   }
 
   return serverPb;
@@ -63,3 +63,4 @@ export async function getCurrentUser() {
     return null;
   }
 }
+

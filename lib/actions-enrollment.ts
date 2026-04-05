@@ -2,6 +2,7 @@
 
 import { createServerClient } from "@/lib/pocketbase-server";
 import { revalidatePath } from "next/cache";
+import { sendApprovalEmail } from "./email";
 
 export async function submitEnrollmentRequest(formData: FormData) {
   const pb = await createServerClient();
@@ -51,7 +52,67 @@ export async function updateEnrollmentStatus(id: string, status: "approved" | "r
   }
 
   try {
+    // 1. Obtener los detalles de la solicitud
+    const request = await pb.collection("enrollment_requests").getOne(id);
+    
+    // 2. Actualizar el estado
     await pb.collection("enrollment_requests").update(id, { status });
+
+    // 3. Si es aprobada, crear usuario, matricularlo y enviar email
+    if (status === "approved") {
+      let studentId = "";
+      
+      // Buscar si el usuario ya existe por email (requiere que el rol docente pueda listar/buscar usuarios)
+      const existingUsers = await pb.collection("users").getList(1, 1, {
+        filter: `email="${request.email}"`,
+        requestKey: null
+      });
+
+      if (existingUsers.items.length > 0) {
+        studentId = existingUsers.items[0].id;
+      } else {
+        // Crear nuevo usuario (requiere que el rol docente pueda crear usuarios)
+        const randomPassword = Math.random().toString(36).slice(-12) + "A1@";
+        
+        const newUser = await pb.collection("users").create({
+          email: request.email,
+          password: randomPassword,
+          passwordConfirm: randomPassword,
+          role: "estudiante",
+          name: `${request.firstName} ${request.lastName}`.trim(),
+          firstName: request.firstName,
+          lastName: request.lastName,
+          dni: request.dni,
+          phone: request.phone,
+          birthDate: request.birthDate,
+          emailVisibility: true
+        });
+        
+        studentId = newUser.id;
+      }
+
+      // Matricular al estudiante en los cursos solicitados (requiere que el rol docente pueda actualizar cursos)
+      if (request.courses && Array.isArray(request.courses)) {
+        for (const courseId of request.courses) {
+          try {
+            const course = await pb.collection("courses").getOne(courseId);
+            const currentStudents = course.students || [];
+            
+            if (!currentStudents.includes(studentId)) {
+              await pb.collection("courses").update(courseId, {
+                students: [...currentStudents, studentId]
+              });
+            }
+          } catch (err: any) {
+            console.error(`Error al matricular estudiante en el curso ${courseId}:`, err);
+          }
+        }
+      }
+
+      // 4. Enviar notificación por email
+      await sendApprovalEmail(request.email, request.firstName);
+    }
+
     revalidatePath("/admin/enrollments");
     revalidatePath("/docentes/solicitudes");
     return { success: true };

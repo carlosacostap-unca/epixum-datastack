@@ -28,23 +28,31 @@ export default function LoginPage() {
   const handleGoogleLogin = async () => {
     setIsLoading(true);
     setError(null);
+    let token = null;
+    let model = null;
+
     try {
       const authData = await pb.collection("users").authWithOAuth2({ provider: "google" });
       
       // Store token in cookie for server-side access
-      const token = pb.authStore.token;
-      const model = pb.authStore.model;
+      token = pb.authStore.token;
+      model = pb.authStore.model;
       
-      if (token && model) {
-        // Usa la Server Action para setear la cookie y redirigir del lado del servidor.
-        await setAuthCookieAndRedirect(token, model);
-      } else {
+      if (!token || !model) {
         throw new Error("No se pudo obtener el token o el modelo del usuario.");
       }
     } catch (err: any) {
       console.error("Login error:", err);
       setError("Error al iniciar sesión con Google. Por favor, intenta nuevamente.");
       setIsLoading(false);
+      return;
+    }
+
+    // Ejecutar la redirección fuera del bloque try-catch
+    // ya que Next.js implementa `redirect()` lanzando un error especial
+    // que no debe ser atrapado por el catch.
+    if (token && model) {
+      await setAuthCookieAndRedirect(token, model);
     }
   };
 

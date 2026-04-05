@@ -49,7 +49,7 @@ export default function EditClassForm({ courseId, classData }: { courseId: strin
         </div>
       )}
 
-      <div className="bg-[var(--color-surface-container-low)] rounded-[2.5rem] p-10 border border-[var(--color-outline-variant)] shadow-[0_0_40px_rgba(0,0,0,0.2)] flex flex-col gap-8 relative overflow-hidden">
+      <div className="bg-[var(--color-surface-container-low)] rounded-[2.5rem] p-6 md:p-10 border border-[var(--color-outline-variant)] shadow-[0_0_40px_rgba(0,0,0,0.2)] flex flex-col gap-8 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--color-primary)]/5 blur-[60px] -z-10 rounded-full pointer-events-none"></div>
 
         <div>
@@ -110,11 +110,11 @@ export default function EditClassForm({ courseId, classData }: { courseId: strin
         </div>
       </div>
 
-      <div className="flex justify-end gap-6 mt-4">
+      <div className="flex flex-col-reverse sm:flex-row justify-end gap-4 sm:gap-6 mt-4 w-full">
         <button
           type="button"
           onClick={() => router.back()}
-          className="px-8 py-4 bg-transparent text-[var(--color-on-surface)] hover:bg-[var(--color-surface-container-low)] rounded-full font-bold text-sm transition-colors border border-transparent hover:border-[var(--color-outline-variant)]"
+          className="w-full sm:w-auto px-8 py-4 bg-transparent text-[var(--color-on-surface)] hover:bg-[var(--color-surface-container-low)] rounded-full font-bold text-sm transition-colors border border-transparent hover:border-[var(--color-outline-variant)] flex justify-center items-center"
           disabled={isLoading}
         >
           Cancelar
@@ -122,7 +122,7 @@ export default function EditClassForm({ courseId, classData }: { courseId: strin
         <button
           type="submit"
           disabled={isLoading}
-          className="px-8 py-4 bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-container)] text-[#000000] rounded-full hover:opacity-90 transition-opacity font-bold text-sm shadow-[0_0_20px_rgba(63,255,139,0.2)] disabled:opacity-50 flex items-center gap-2"
+          className="w-full sm:w-auto px-8 py-4 bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-container)] text-[#000000] rounded-full hover:opacity-90 transition-opacity font-bold text-sm shadow-[0_0_20px_rgba(63,255,139,0.2)] disabled:opacity-50 flex items-center justify-center gap-2"
         >
           {isLoading ? (
             <>

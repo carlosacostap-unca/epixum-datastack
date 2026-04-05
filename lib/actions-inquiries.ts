@@ -6,7 +6,7 @@ import { Inquiry, InquiryResponse } from "@/types";
 
 // --- Inquiries ---
 
-export async function getInquiries(filter?: { classId?: string; assignmentId?: string; status?: string; authorId?: string; search?: string }) {
+export async function getInquiries(filter?: { classId?: string; assignmentId?: string; courseId?: string; status?: string; authorId?: string; search?: string }) {
   const pb = await createServerClient();
   const user = pb.authStore.model;
 
@@ -17,6 +17,7 @@ export async function getInquiries(filter?: { classId?: string; assignmentId?: s
 
     if (filter?.classId) filters.push(`class = "${filter.classId}"`);
     if (filter?.assignmentId) filters.push(`assignment = "${filter.assignmentId}"`);
+    if (filter?.courseId) filters.push(`course = "${filter.courseId}"`);
     if (filter?.status) filters.push(`status = "${filter.status}"`);
     if (filter?.authorId) filters.push(`author = "${filter.authorId}"`);
 

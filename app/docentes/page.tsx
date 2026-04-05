@@ -10,9 +10,9 @@ export default async function DocentesPage() {
   const courses = await getTeacherCourses(user.id);
 
   return (
-    <div className="flex-1 p-12 overflow-y-auto w-full h-full">
+    <div className="flex-1 p-6 md:p-12 overflow-y-auto w-full h-full">
       {/* Welcome Header */}
-      <header className="mb-24 flex flex-col md:flex-row gap-20 items-start justify-between">
+      <header className="mb-12 md:mb-24 flex flex-col md:flex-row gap-10 md:gap-20 items-start justify-between">
         <div className="max-w-2xl">
           <div className="flex items-center gap-3 mb-8">
             <span className="w-2 h-2 rounded-full bg-[var(--color-primary)] shadow-[0_0_10px_var(--color-primary)]"></span>
@@ -20,15 +20,15 @@ export default async function DocentesPage() {
               Panel Docente
             </span>
           </div>
-          <h1 className="text-6xl font-headline tracking-tight text-[var(--color-on-surface)] mb-6">
+          <h1 className="text-4xl md:text-6xl font-headline tracking-tight text-[var(--color-on-surface)] mb-6">
             Hola, <span className="text-[var(--color-primary)]">{user.firstName || user.name?.split(' ')[0] || 'Docente'}</span>
           </h1>
-          <p className="text-[var(--color-on-surface-variant)] text-xl leading-relaxed">
+          <p className="text-[var(--color-on-surface-variant)] text-lg md:text-xl leading-relaxed">
             Bienvenido al panel docente. Selecciona uno de tus cursos para gestionar su contenido, clases y trabajos prácticos.
           </p>
         </div>
 
-        <div className="bg-[var(--color-surface-container-low)] rounded-[2rem] p-8 min-w-[240px] relative overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.3)]">
+        <div className="bg-[var(--color-surface-container-low)] rounded-[2rem] p-8 w-full md:min-w-[240px] md:w-auto relative overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.3)]">
           <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--color-primary)]/10 blur-[40px] -z-10 rounded-full pointer-events-none"></div>
           <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--color-on-surface-variant)] mb-4">
             Cursos Activos

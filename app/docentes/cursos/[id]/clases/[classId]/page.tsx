@@ -26,11 +26,11 @@ export default async function TeacherClassManagementPage(props: { params: Promis
   const links = await getLinks(classData.id, 'class');
 
   return (
-    <div className="flex-1 p-12 overflow-y-auto w-full h-full">
+    <div className="flex-1 p-6 md:p-12 overflow-y-auto w-full h-full">
       {/* Back button */}
       <Link 
         href={`/docentes/cursos/${course.id}`} 
-        className="inline-flex items-center gap-2 text-[var(--color-on-surface-variant)] hover:text-[var(--color-primary)] transition-colors mb-12 group"
+        className="inline-flex items-center gap-2 text-[var(--color-on-surface-variant)] hover:text-[var(--color-primary)] transition-colors mb-8 md:mb-12 group"
       >
         <span className="material-symbols-outlined group-hover:-translate-x-1 transition-transform">arrow_back</span>
         <span className="font-bold text-sm tracking-widest uppercase">Volver al curso</span>
@@ -38,19 +38,19 @@ export default async function TeacherClassManagementPage(props: { params: Promis
 
       {/* Hero Section */}
       <header className="mb-16">
-        <div className="flex items-center gap-3 mb-8">
+        <div className="flex flex-wrap items-center gap-3 mb-8">
           <span className="w-2 h-2 rounded-full bg-[var(--color-primary)] shadow-[0_0_10px_var(--color-primary)]"></span>
           <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--color-on-surface-variant)]">
             Gestión de Clase
           </span>
-          <span className="px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest ml-4 bg-[var(--color-surface-container-highest)] text-[var(--color-on-surface-variant)]">
+          <span className="px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest bg-[var(--color-surface-container-highest)] text-[var(--color-on-surface-variant)]">
             {course.title}
           </span>
         </div>
         
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
           <div>
-            <h1 className="text-5xl font-headline tracking-tight text-[var(--color-on-surface)] mb-6 leading-tight">
+            <h1 className="text-3xl md:text-5xl font-headline tracking-tight text-[var(--color-on-surface)] mb-6 leading-tight">
               {classData.title}
             </h1>
             
@@ -73,8 +73,8 @@ export default async function TeacherClassManagementPage(props: { params: Promis
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
-            <Link href={`/docentes/cursos/${course.id}/clases/${classData.id}/editar`} className="px-6 py-3 bg-[var(--color-surface-container-highest)] text-[var(--color-on-surface)] rounded-full hover:text-[var(--color-primary)] hover:bg-[var(--color-surface-container-high)] transition-colors font-bold text-sm flex items-center gap-2">
+          <div className="flex items-center gap-4 w-full md:w-auto mt-4 md:mt-0">
+            <Link href={`/docentes/cursos/${course.id}/clases/${classData.id}/editar`} className="px-6 py-3 bg-[var(--color-surface-container-highest)] text-[var(--color-on-surface)] rounded-full hover:text-[var(--color-primary)] hover:bg-[var(--color-surface-container-high)] transition-colors font-bold text-sm flex items-center justify-center w-full md:w-auto gap-2">
               <span className="material-symbols-outlined text-[18px]">edit</span>
               <span>Editar Info</span>
             </Link>
@@ -87,7 +87,7 @@ export default async function TeacherClassManagementPage(props: { params: Promis
         {/* Main Details */}
         <div className="xl:col-span-2 flex flex-col gap-12">
           {/* Description */}
-          <section className="bg-[var(--color-surface-container-low)] rounded-[2.5rem] p-10 border border-[var(--color-outline-variant)] relative overflow-hidden">
+          <section className="bg-[var(--color-surface-container-low)] rounded-[2.5rem] p-6 md:p-10 border border-[var(--color-outline-variant)] relative overflow-hidden">
             <div className="absolute top-0 left-0 w-32 h-32 bg-[var(--color-primary)]/5 blur-[40px] -z-10 rounded-full pointer-events-none"></div>
             <h2 className="text-xl font-bold text-[var(--color-on-surface)] mb-6 flex items-center gap-2">
               <span className="material-symbols-outlined text-[var(--color-primary)]">description</span>

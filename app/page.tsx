@@ -137,10 +137,19 @@ export default async function Home() {
 
       <div className="container mx-auto px-6 py-20 lg:py-24 max-w-7xl">
         {/* Asymmetrical Hero Section */}
-        <header className="mb-24 lg:mb-32 flex flex-col lg:flex-row gap-20 items-start">
-          <div className="flex-1">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-[1.5rem] bg-[var(--color-surface-container-highest)] mb-8 shadow-[0_0_40px_rgba(63,255,139,0.06)]">
-              <span className="material-symbols-outlined text-[var(--color-primary)] text-3xl">rocket_launch</span>
+        <header className="mb-24 lg:mb-32 flex flex-col w-full gap-20 items-start">
+          <div className="flex-1 w-full">
+            <div className="flex justify-between items-start w-full mb-8">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-[1.5rem] bg-[var(--color-surface-container-highest)] shadow-[0_0_40px_rgba(63,255,139,0.06)]">
+                <span className="material-symbols-outlined text-[var(--color-primary)] text-3xl">rocket_launch</span>
+              </div>
+              <Link 
+                href="/login" 
+                className="bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-container)] text-[#000000] font-bold text-sm tracking-wide uppercase px-8 py-4 rounded-full transition-all hover:opacity-90 hover:shadow-[0_0_20px_rgba(63,255,139,0.3)] flex items-center justify-center gap-2"
+              >
+                <span className="material-symbols-outlined text-[1.25rem]">login</span>
+                Ingresar
+              </Link>
             </div>
             <h1 className="text-[3.5rem] md:text-6xl font-headline tracking-tight mb-8 text-[var(--color-on-surface)] leading-tight">
               PostDiplomatura

@@ -60,8 +60,19 @@ export function EnrollmentForm({ availableCourses }: { availableCourses: { id: s
             <input type="date" name="birthDate" required className="w-full bg-[var(--color-surface-container-lowest)] border border-[var(--color-outline-variant)] focus:border-[var(--color-primary)] outline-none rounded-[1.5rem] px-5 py-4 text-[var(--color-on-surface)] transition-colors [color-scheme:dark]" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-[var(--color-on-surface-variant)] mb-2">Email</label>
-            <input type="email" name="email" required className="w-full bg-[var(--color-surface-container-lowest)] border border-[var(--color-outline-variant)] focus:border-[var(--color-primary)] outline-none rounded-[1.5rem] px-5 py-4 text-[var(--color-on-surface)] transition-colors" />
+            <label className="block text-sm font-medium text-[var(--color-on-surface-variant)] mb-1">
+              Email
+            </label>
+            <span className="block text-xs text-[var(--color-primary)] mb-2">
+              (Debe ser una cuenta de Google / @gmail.com)
+            </span>
+            <input 
+              type="email" 
+              name="email" 
+              placeholder="ejemplo@gmail.com"
+              required 
+              className="w-full bg-[var(--color-surface-container-lowest)] border border-[var(--color-outline-variant)] focus:border-[var(--color-primary)] outline-none rounded-[1.5rem] px-5 py-4 text-[var(--color-on-surface)] transition-colors" 
+            />
           </div>
           <div>
             <label className="block text-sm font-medium text-[var(--color-on-surface-variant)] mb-2">Teléfono</label>
