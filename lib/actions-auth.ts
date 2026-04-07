@@ -21,6 +21,8 @@ export async function setAuthCookieAndRedirect(token: string, model: any) {
     redirect("/docentes");
   } else if (role === "admin") {
     redirect("/admin/courses");
+  } else if (role === "estudiante") {
+    redirect("/estudiantes");
   } else {
     redirect("/");
   }

@@ -62,7 +62,7 @@ export default function Header() {
   }
 
   // Hide header for specific routes that have their own layout (like docentes dashboard)
-  if (pathname.startsWith("/docentes")) {
+  if (pathname.startsWith("/docentes") || pathname.startsWith("/estudiantes")) {
     return null;
   }
 

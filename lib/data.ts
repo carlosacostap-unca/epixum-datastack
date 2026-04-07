@@ -77,6 +77,16 @@ export async function getTeacherCourses(teacherId: string) {
     return records;
 }
 
+export async function getStudentCourses(studentId: string) {
+    const pb = await createServerClient();
+    const records = await pb.collection('courses').getFullList<Course>({
+        filter: `students ~ "${studentId}"`,
+        sort: '-created',
+        expand: 'teachers'
+    });
+    return records;
+}
+
 export async function getCourse(id: string) {
   const pb = await createServerClient();
   const record = await pb.collection('courses').getOne<Course>(id, {

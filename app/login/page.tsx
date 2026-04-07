@@ -19,6 +19,8 @@ export default function LoginPage() {
         router.push("/docentes");
       } else if (role === "admin") {
         router.push("/admin/courses");
+      } else if (role === "estudiante") {
+        router.push("/estudiantes");
       } else {
         router.push("/");
       }
@@ -43,7 +45,7 @@ export default function LoginPage() {
       }
     } catch (err: any) {
       console.error("Login error:", err);
-      setError("Error al iniciar sesión con Google. Por favor, intenta nuevamente.");
+      setError("Tu cuenta de email no está autorizada para ingresar a la plataforma.");
       setIsLoading(false);
       return;
     }
