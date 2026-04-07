@@ -1,6 +1,7 @@
 import { createServerClient, getCurrentUser } from "@/lib/pocketbase-server";
 import { redirect } from "next/navigation";
 import { EnrollmentRequest } from "@/types";
+import { ResendEmailsButton } from "@/components/ResendEmailsButton";
 import FormattedDate from "@/components/FormattedDate";
 import { updateEnrollmentStatus } from "@/lib/actions-enrollment";
 
@@ -43,6 +44,7 @@ export default async function DocenteSolicitudesPage() {
             Revisa y gestiona las solicitudes de los estudiantes que desean inscribirse en los cursos.
           </p>
         </div>
+        <ResendEmailsButton />
       </header>
 
       <div className="bg-[var(--color-surface-container-low)] rounded-[2rem] md:rounded-[3rem] overflow-hidden p-2 md:p-4">

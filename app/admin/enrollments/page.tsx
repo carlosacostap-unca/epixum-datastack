@@ -4,6 +4,7 @@ import { EnrollmentRequest } from "@/types";
 import FormattedDate from "@/components/FormattedDate";
 import { updateEnrollmentStatus } from "@/lib/actions-enrollment";
 import { revalidatePath } from "next/cache";
+import { ResendEmailsButton } from "@/components/ResendEmailsButton";
 
 export const dynamic = 'force-dynamic';
 
@@ -27,13 +28,16 @@ export default async function EnrollmentsPage() {
 
   return (
     <div className="container mx-auto p-8 min-h-screen">
-      <header className="mb-12">
-        <h1 className="text-3xl font-bold text-zinc-900 dark:text-white">
-          Solicitudes de Matrícula
-        </h1>
-        <p className="text-zinc-500 mt-2">
-          Gestiona las solicitudes de los nuevos estudiantes.
-        </p>
+      <header className="mb-12 flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold text-zinc-900 dark:text-white">
+            Solicitudes de Matrícula
+          </h1>
+          <p className="text-zinc-500 mt-2">
+            Gestiona las solicitudes de los nuevos estudiantes.
+          </p>
+        </div>
+        <ResendEmailsButton />
       </header>
 
       <div className="bg-white dark:bg-zinc-900 rounded-xl shadow-sm border border-zinc-200 dark:border-zinc-800 overflow-hidden">
