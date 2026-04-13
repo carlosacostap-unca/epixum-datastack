@@ -26,8 +26,13 @@ export default function EditClassForm({ courseId, classData }: { courseId: strin
     const formData = new FormData();
     formData.append("title", title);
     formData.append("description", description);
-    formData.append("date", date);
-    formData.append("time", time);
+    
+    // Convertir fecha local a UTC antes de enviar
+    if (date) {
+      const dateTimeStr = time ? `${date}T${time}` : `${date}T00:00:00`;
+      const localDate = new Date(dateTimeStr);
+      formData.append("date", localDate.toISOString());
+    }
 
     const result = await updateClass(classData.id, formData);
 

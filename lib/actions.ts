@@ -158,9 +158,14 @@ export async function createClassForCourse(courseId: string, formData: FormData)
   try {
     let dateObj = null;
     if (dateStr) {
-      // Combine date and time if available
-      const dateTimeStr = timeStr ? `${dateStr}T${timeStr}` : `${dateStr}T00:00:00`;
-      dateObj = new Date(dateTimeStr).toISOString();
+      // Check if dateStr is already an ISO string
+      if (dateStr.includes('T') && dateStr.endsWith('Z')) {
+        dateObj = dateStr;
+      } else {
+        // Combine date and time if available
+        const dateTimeStr = timeStr ? `${dateStr}T${timeStr}` : `${dateStr}T00:00:00`;
+        dateObj = new Date(dateTimeStr).toISOString();
+      }
     }
 
     // Create the class
@@ -229,8 +234,12 @@ export async function updateClass(classId: string, formData: FormData) {
   try {
     let dateObj = null;
     if (dateStr) {
-      const dateTimeStr = timeStr ? `${dateStr}T${timeStr}` : `${dateStr}T00:00:00`;
-      dateObj = new Date(dateTimeStr).toISOString();
+      if (dateStr.includes('T') && dateStr.endsWith('Z')) {
+        dateObj = dateStr;
+      } else {
+        const dateTimeStr = timeStr ? `${dateStr}T${timeStr}` : `${dateStr}T00:00:00`;
+        dateObj = new Date(dateTimeStr).toISOString();
+      }
     }
 
     const data: any = {
@@ -292,8 +301,12 @@ export async function createAssignmentForCourse(courseId: string, formData: Form
   try {
     let dateObj = null;
     if (dueDateStr) {
-      const dateTimeStr = timeStr ? `${dueDateStr}T${timeStr}` : `${dueDateStr}T23:59:59`;
-      dateObj = new Date(dateTimeStr).toISOString();
+      if (dueDateStr.includes('T') && dueDateStr.endsWith('Z')) {
+        dateObj = dueDateStr;
+      } else {
+        const dateTimeStr = timeStr ? `${dueDateStr}T${timeStr}` : `${dueDateStr}T23:59:59`;
+        dateObj = new Date(dateTimeStr).toISOString();
+      }
     }
 
     const data: any = {

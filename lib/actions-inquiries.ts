@@ -104,13 +104,6 @@ export async function createInquiry(data: { title: string; description: string; 
 
     const record = await pb.collection("inquiries").create(newInquiry);
     
-    // Si la consulta tiene un curso asociado, actualizamos la relación en el curso
-    if (data.courseId) {
-      const course = await pb.collection('courses').getOne(data.courseId);
-      const updatedInquiries = [...(course.inquiries || []), record.id];
-      await pb.collection('courses').update(data.courseId, { inquiries: updatedInquiries });
-    }
-    
     revalidatePath("/inquiries");
     if (data.classId) revalidatePath(`/classes/${data.classId}`);
     if (data.assignmentId) revalidatePath(`/assignments/${data.assignmentId}`);

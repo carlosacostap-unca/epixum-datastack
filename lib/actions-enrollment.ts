@@ -20,12 +20,15 @@ export async function submitEnrollmentRequest(formData: FormData) {
     return { success: false, error: "Todos los campos y al menos un curso son requeridos." };
   }
 
+  // Adjust birthDate to 12:00:00 UTC to avoid timezone boundary shifts
+  const birthDateISO = `${birthDate}T12:00:00.000Z`;
+
   try {
     await pb.collection("enrollment_requests").create({
       firstName,
       lastName,
       dni,
-      birthDate,
+      birthDate: birthDateISO,
       email,
       phone,
       courses,

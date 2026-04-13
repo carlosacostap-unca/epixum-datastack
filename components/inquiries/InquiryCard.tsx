@@ -65,11 +65,11 @@ export default function InquiryCard({ inquiry, currentUser }: InquiryCardProps) 
             />
           ) : (
             <div className="w-6 h-6 rounded-full bg-zinc-200 dark:bg-zinc-700 flex items-center justify-center text-xs font-bold text-zinc-500">
-              {inquiry.expand?.author?.name?.charAt(0) || "?"}
+              {(inquiry.expand?.author?.name || inquiry.expand?.author?.firstName || "?").charAt(0).toUpperCase()}
             </div>
           )}
           <span className="text-xs text-zinc-500 dark:text-zinc-400">
-            {isAuthor ? "Tú" : inquiry.expand?.author?.name || "Usuario"}
+            {isAuthor ? "Tú" : inquiry.expand?.author?.name || [inquiry.expand?.author?.firstName, inquiry.expand?.author?.lastName].filter(Boolean).join(" ") || "Usuario"}
           </span>
         </div>
         

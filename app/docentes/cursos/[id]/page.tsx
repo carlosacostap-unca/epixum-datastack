@@ -90,7 +90,7 @@ export default async function TeacherCourseManagementPage(props: { params: Promi
             >
               <div className="flex items-center gap-3">
                 <span className="material-symbols-outlined text-xl">forum</span>
-                <span className="font-bold text-sm">Consultas</span>
+                <span className="font-bold text-sm">Foro de Consultas</span>
               </div>
               <span className="material-symbols-outlined text-lg group-hover:translate-x-1 transition-transform">arrow_forward</span>
             </Link>

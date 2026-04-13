@@ -35,8 +35,12 @@ export async function updateUserProfile(userId: string, data: UserProfileData) {
     // Handle birthDate
     if (data.birthDate) {
       // Input type="date" returns YYYY-MM-DD
-      // PocketBase expects a date string or ISO string
-      updateData.birthDate = new Date(data.birthDate).toISOString();
+      // Set time to 12:00:00 UTC to avoid timezone boundary shifts
+      if (!data.birthDate.includes('T')) {
+        updateData.birthDate = `${data.birthDate}T12:00:00.000Z`;
+      } else {
+        updateData.birthDate = data.birthDate;
+      }
     } else if (data.birthDate === "") {
         updateData.birthDate = null;
     }

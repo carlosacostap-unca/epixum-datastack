@@ -34,6 +34,13 @@ export default function AssignmentForm({ assignment, onClose, isEmbedded = false
       // Ensure description is included in formData
       formData.set("description", description);
 
+      // Convert local datetime to UTC before sending
+      const dueDateStr = formData.get("dueDate") as string;
+      if (dueDateStr) {
+        const date = new Date(dueDateStr);
+        formData.set("dueDate", date.toISOString());
+      }
+
       let result;
       if (assignment) {
         // Update assignment

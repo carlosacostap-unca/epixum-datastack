@@ -4,20 +4,25 @@ import { getCurrentUser } from "@/lib/pocketbase-server";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import FormattedDate from "@/components/FormattedDate";
-import TeacherInquiryActions from "./TeacherInquiryActions";
+import StudentInquiryActions from "./StudentInquiryActions";
 
 export const dynamic = 'force-dynamic';
 
-export default async function TeacherInquiryDetailPage(props: { params: Promise<{ id: string; inquiryId: string }> }) {
+export default async function EstudianteInquiryDetailPage(props: { params: Promise<{ id: string; inquiryId: string }> }) {
   const params = await props.params;
   const user = await getCurrentUser();
-  if (!user || user.role !== "docente") {
+  if (!user || user.role !== "estudiante") {
     redirect("/");
   }
 
   const course = await getCourse(params.id);
   if (!course) {
-    redirect("/docentes");
+    redirect("/estudiantes");
+  }
+
+  const isEnrolled = course.expand?.students?.some(student => student.id === user.id);
+  if (!isEnrolled) {
+    redirect("/estudiantes");
   }
 
   const inquiryResult = await getInquiry(params.inquiryId);
@@ -27,16 +32,17 @@ export default async function TeacherInquiryDetailPage(props: { params: Promise<
 
   const inquiry = inquiryResult.data;
   const responses = await getInquiryResponses(params.inquiryId);
+  const isAuthor = inquiry.author === user.id;
 
   return (
     <div className="flex-1 p-6 md:p-12 overflow-y-auto w-full h-full flex flex-col">
       {/* Back button */}
       <Link 
-        href={`/docentes/cursos/${course.id}/consultas`} 
+        href={`/estudiantes/cursos/${course.id}/consultas`} 
         className="inline-flex items-center gap-2 text-[var(--color-on-surface-variant)] hover:text-[var(--color-primary)] transition-colors mb-8 md:mb-12 group"
       >
         <span className="material-symbols-outlined group-hover:-translate-x-1 transition-transform">arrow_back</span>
-        <span className="font-bold text-sm tracking-widest uppercase">Volver a Consultas</span>
+        <span className="font-bold text-sm tracking-widest uppercase">Volver al Foro</span>
       </Link>
 
       <div className="max-w-4xl w-full mx-auto flex flex-col gap-12">
@@ -102,6 +108,7 @@ export default async function TeacherInquiryDetailPage(props: { params: Promise<
           <div className="flex flex-col gap-4">
             {responses.map((response) => {
               const isTeacherResponse = response.expand?.author?.role === "docente" || response.expand?.author?.role === "admin";
+              const isMyResponse = response.expand?.author?.id === user.id;
               
               return (
                 <div 
@@ -109,7 +116,9 @@ export default async function TeacherInquiryDetailPage(props: { params: Promise<
                   className={`p-6 rounded-[2rem] border ${
                     isTeacherResponse 
                     ? "bg-[var(--color-primary)]/5 border-[var(--color-primary)]/20 ml-0 md:ml-12" 
-                    : "bg-[var(--color-surface-container-lowest)] border-[var(--color-outline-variant)] mr-0 md:mr-12"
+                    : isMyResponse
+                      ? "bg-[var(--color-surface-container-highest)] border-[var(--color-outline-variant)] mr-0 md:mr-12"
+                      : "bg-[var(--color-surface-container-lowest)] border-[var(--color-outline-variant)] mr-0 md:mr-12"
                   }`}
                 >
                   <div className="flex justify-between items-start mb-4">
@@ -133,6 +142,7 @@ export default async function TeacherInquiryDetailPage(props: { params: Promise<
                         <div className="flex items-center gap-2">
                           <span className={`font-bold ${isTeacherResponse ? "text-[var(--color-primary)]" : "text-[var(--color-on-surface)]"}`}>
                             {response.expand?.author?.name || [response.expand?.author?.firstName, response.expand?.author?.lastName].filter(Boolean).join(" ") || "Usuario"}
+                            {isMyResponse && " (Tú)"}
                           </span>
                           {isTeacherResponse && (
                             <span className="text-[10px] bg-[var(--color-primary)]/20 text-[var(--color-primary)] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">
@@ -156,7 +166,7 @@ export default async function TeacherInquiryDetailPage(props: { params: Promise<
         </section>
 
         {/* Actions Form */}
-        <TeacherInquiryActions inquiryId={inquiry.id} currentStatus={inquiry.status} />
+        <StudentInquiryActions inquiryId={inquiry.id} currentStatus={inquiry.status} isAuthor={isAuthor} />
       </div>
     </div>
   );

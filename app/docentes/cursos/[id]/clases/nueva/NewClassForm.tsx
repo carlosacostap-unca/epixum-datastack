@@ -21,8 +21,13 @@ export default function NewClassForm({ courseId }: { courseId: string }) {
     const formData = new FormData();
     formData.append("title", title);
     formData.append("description", description);
-    formData.append("date", date);
-    formData.append("time", time);
+    
+    // Si hay fecha, la convertimos a UTC usando la zona horaria del navegador
+    if (date) {
+      const dateTimeStr = time ? `${date}T${time}` : `${date}T00:00:00`;
+      const localDate = new Date(dateTimeStr);
+      formData.append("date", localDate.toISOString());
+    }
 
     const result = await createClassForCourse(courseId, formData);
 

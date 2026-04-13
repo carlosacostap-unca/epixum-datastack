@@ -9,10 +9,18 @@ export async function createCourse(formData: FormData) {
   const pb = await createServerClient();
   const title = formData.get('title') as string;
   const description = formData.get('description') as string;
-  const startDate = formData.get('startDate') as string;
-  const endDate = formData.get('endDate') as string;
+  let startDate = formData.get('startDate') as string;
+  let endDate = formData.get('endDate') as string;
   const status = formData.get('status') as 'borrador' | 'en curso' | 'finalizado';
   
+  if (startDate && !startDate.includes('T')) {
+    startDate = `${startDate}T12:00:00.000Z`;
+  }
+  
+  if (endDate && !endDate.includes('T')) {
+    endDate = `${endDate}T12:00:00.000Z`;
+  }
+
   const students = formData.getAll('students') as string[];
   const teachers = formData.getAll('teachers') as string[];
   const classes = formData.getAll('classes') as string[];
@@ -46,10 +54,18 @@ export async function updateCourse(id: string, formData: FormData) {
   const pb = await createServerClient();
   const title = formData.get('title') as string;
   const description = formData.get('description') as string;
-  const startDate = formData.get('startDate') as string;
-  const endDate = formData.get('endDate') as string;
+  let startDate = formData.get('startDate') as string;
+  let endDate = formData.get('endDate') as string;
   const status = formData.get('status') as 'borrador' | 'en curso' | 'finalizado';
   
+  if (startDate && !startDate.includes('T')) {
+    startDate = `${startDate}T12:00:00.000Z`;
+  }
+  
+  if (endDate && !endDate.includes('T')) {
+    endDate = `${endDate}T12:00:00.000Z`;
+  }
+
   const students = formData.getAll('students') as string[];
   const teachers = formData.getAll('teachers') as string[];
   const classes = formData.getAll('classes') as string[];
