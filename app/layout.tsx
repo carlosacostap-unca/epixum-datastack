@@ -29,7 +29,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Epixum - PostDiplomatura",
+  title: "Epixum - Data Stack",
   description: "Plataforma de gestión educativa",
   icons: {
     icon: '/epixum-logo.png',

@@ -62,7 +62,7 @@ export default async function Home() {
               </Link>
             </div>
             <h1 className="text-[3.5rem] md:text-6xl font-headline tracking-tight mb-8 text-[var(--color-on-surface)] leading-tight">
-              PostDiplomatura
+              Data Stack
             </h1>
             <p className="text-xl text-[var(--color-on-surface-variant)] font-body leading-relaxed max-w-2xl">
               Oferta de cursos gratuitos exclusiva para egresados de la Diplomatura Universitarios en Desarrollo Web Fullstack con JavaScript.

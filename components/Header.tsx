@@ -99,7 +99,7 @@ export default function Header() {
             height={32} 
             className="w-8 h-8 object-contain"
           />
-          <span>Epixum - PostDiplomatura</span>
+          <span>Epixum - Data Stack</span>
         </Link>
         <div className="flex items-center gap-6">
           {user?.role === 'admin' && (

@@ -26,7 +26,7 @@ export async function sendApprovalEmail(to: string, firstName: string) {
 
     const emailHtml = `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px;">
-          <h2 style="color: #3FFF8B;">¡Bienvenido/a a la PostDiplomatura, ${firstName}!</h2>
+          <h2 style="color: #3FFF8B;">¡Bienvenido/a a Data Stack, ${firstName}!</h2>
           <p style="font-size: 16px; color: #333;">Nos complace informarte que tu solicitud de matrícula ha sido <strong>aprobada</strong>.</p>
           
           <div style="background-color: #f9f9f9; padding: 15px; border-left: 4px solid #3FFF8B; margin: 20px 0;">
@@ -38,11 +38,11 @@ export async function sendApprovalEmail(to: string, firstName: string) {
           </div>
 
           <div style="text-align: center; margin: 30px 0;">
-            <a href="https://postdiplomatura.epixum.com/login" style="background-color: #3FFF8B; color: #000000; padding: 12px 24px; text-decoration: none; font-weight: bold; border-radius: 25px; display: inline-block;">Ingresar a la Plataforma</a>
+            <a href="https://datastack.epixum.com/login" style="background-color: #3FFF8B; color: #000000; padding: 12px 24px; text-decoration: none; font-weight: bold; border-radius: 25px; display: inline-block;">Ingresar a la Plataforma</a>
           </div>
           
           <div style="text-align: center; margin: 20px 0;">
-            <a href="https://postdiplomatura.epixum.com/" style="color: #666; text-decoration: underline; font-size: 14px;">Volver al formulario de matriculación (solo si tu cuenta no era de Google)</a>
+            <a href="https://datastack.epixum.com/" style="color: #666; text-decoration: underline; font-size: 14px;">Volver al formulario de matriculación (solo si tu cuenta no era de Google)</a>
           </div>
 
           <p style="font-size: 14px; color: #666;">Si tienes alguna duda, puedes responder a este correo.</p>
@@ -51,7 +51,7 @@ export async function sendApprovalEmail(to: string, firstName: string) {
       `;
 
     const info = await transporter.sendMail({
-      from: `"PostDiplomatura" <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
+      from: `"Data Stack" <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
       to: to,
       subject: emailSubject,
       html: emailHtml,

@@ -3,7 +3,7 @@ import PocketBase from 'pocketbase';
 import nodemailer from 'nodemailer';
 
 async function main() {
-  const pb = new PocketBase('https://pocketbase-postdiplomatura.epixum.com');
+  const pb = new PocketBase('https://pocketbase-datastack.epixum.com');
   const email = process.env.ADMIN_EMAIL || 'admin@epixum.com';
   const password = process.env.ADMIN_PASSWORD || 'Admin123!';
 

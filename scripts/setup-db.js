@@ -1,7 +1,7 @@
 const PocketBase = require('pocketbase/cjs');
 const readline = require('readline');
 
-const pb = new PocketBase('https://pocketbase-postdiplomatura.epixum.com');
+const pb = new PocketBase('https://pocketbase-datastack.epixum.com');
 
 const rl = readline.createInterface({
   input: process.stdin,

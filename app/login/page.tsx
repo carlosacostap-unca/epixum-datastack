@@ -75,7 +75,7 @@ export default function LoginPage() {
         
         <div className="text-center mb-12">
           <h1 className="text-4xl font-headline tracking-tight mb-3 text-[var(--color-on-surface)]">Epixum</h1>
-          <p className="text-lg text-[var(--color-on-surface-variant)]">Plataforma de PostDiplomatura</p>
+          <p className="text-lg text-[var(--color-on-surface-variant)]">Plataforma de Data Stack</p>
         </div>
 
         {error && (
