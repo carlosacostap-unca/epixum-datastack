@@ -13,7 +13,7 @@ export default async function DeliveryDetailsPage({ params }: { params: Promise<
   const user = await getCurrentUser();
 
   if (!user || (user.role !== 'docente' && user.role !== 'admin')) {
-    redirect('/login');
+    redirect('/');
   }
 
   const assignment = await getAssignment(id);

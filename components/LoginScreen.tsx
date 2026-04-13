@@ -1,31 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import pb from "@/lib/pocketbase";
-import Link from "next/link";
 import { setAuthCookieAndRedirect } from "@/lib/actions-auth";
-import { useRouter } from "next/navigation";
 
-export default function LoginPage() {
+export default function LoginScreen() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
-
-  // Check if already logged in
-  useEffect(() => {
-    if (pb.authStore.isValid && pb.authStore.model) {
-      const role = pb.authStore.model.role;
-      if (role === "docente") {
-        router.push("/docentes");
-      } else if (role === "admin") {
-        router.push("/admin/courses");
-      } else if (role === "estudiante") {
-        router.push("/estudiantes");
-      } else {
-        router.push("/");
-      }
-    }
-  }, [router]);
 
   const handleGoogleLogin = async () => {
     setIsLoading(true);
@@ -110,13 +91,6 @@ export default function LoginPage() {
               )}
             </div>
           </button>
-
-          <div className="text-center mt-8">
-             <Link href="/" className="text-[var(--color-on-surface-variant)] hover:text-[var(--color-primary)] transition-colors text-sm font-medium flex items-center justify-center gap-2">
-                <span className="material-symbols-outlined text-lg">arrow_back</span>
-                Volver al inicio
-             </Link>
-          </div>
         </div>
       </div>
     </div>

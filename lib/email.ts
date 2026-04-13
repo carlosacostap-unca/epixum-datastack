@@ -38,7 +38,7 @@ export async function sendApprovalEmail(to: string, firstName: string) {
           </div>
 
           <div style="text-align: center; margin: 30px 0;">
-            <a href="https://datastack.epixum.com/login" style="background-color: #3FFF8B; color: #000000; padding: 12px 24px; text-decoration: none; font-weight: bold; border-radius: 25px; display: inline-block;">Ingresar a la Plataforma</a>
+            <a href="https://datastack.epixum.com/" style="background-color: #3FFF8B; color: #000000; padding: 12px 24px; text-decoration: none; font-weight: bold; border-radius: 25px; display: inline-block;">Ingresar a la Plataforma</a>
           </div>
           
           <div style="text-align: center; margin: 20px 0;">

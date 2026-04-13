@@ -56,8 +56,8 @@ export default function Header() {
     };
   }, []);
 
-  // Don't show header on login page
-  if (pathname === "/login") {
+  // No renderizar el Header en la página de inicio (ahora login)
+  if (pathname === "/") {
     return null;
   }
 
@@ -152,7 +152,7 @@ export default function Header() {
             </div>
           ) : (
             <Link 
-              href="/login"
+              href="/"
               className="text-sm font-bold text-[var(--color-on-surface)] bg-[var(--color-surface-container-highest)] hover:bg-[var(--color-surface-container)] px-6 py-3 rounded-full transition-colors flex items-center gap-2"
             >
               <span className="material-symbols-outlined text-[1.25rem]">login</span>

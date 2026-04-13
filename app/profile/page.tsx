@@ -10,7 +10,7 @@ export default async function ProfilePage() {
   const currentUser = pb.authStore.model;
 
   if (!currentUser) {
-    redirect("/login");
+    redirect("/");
   }
 
   // Fetch fresh user data to ensure we have the latest fields
