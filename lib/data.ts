@@ -105,11 +105,17 @@ export async function getAllClasses() {
 
 export async function getClassesByCourse(courseId: string) {
     const pb = await createServerClient();
-    const records = await pb.collection('classes').getFullList<Class>({
-        filter: `course = "${courseId}"`,
-        sort: '-date', // Ordenar por fecha descendente
-    });
-    return records;
+    try {
+        const course = await pb.collection('courses').getOne<Course>(courseId, {
+            expand: 'classes'
+        });
+        const classes = course.expand?.classes || [];
+        // Ordenar por fecha descendente
+        return classes.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    } catch (e) {
+        console.error("Error in getClassesByCourse:", e);
+        return [];
+    }
 }
 
 export async function getClass(id: string) {

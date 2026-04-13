@@ -173,10 +173,15 @@ export async function createClassForCourse(courseId: string, formData: FormData)
       title,
       description,
       date: dateObj,
-      course: courseId, // Relacionar directamente la clase con el curso
+      // course: courseId, // Eliminado porque la colección classes no tiene este campo
     };
     
     const newClass = await pb.collection('classes').create(data);
+    
+    // Actualizar el curso para incluir esta nueva clase
+    await pb.collection('courses').update(courseId, {
+      "classes+": newClass.id
+    });
     
     revalidatePath(`/docentes/cursos/${courseId}`);
     return { success: true, classId: newClass.id };

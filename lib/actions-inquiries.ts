@@ -17,7 +17,23 @@ export async function getInquiries(filter?: { classId?: string; assignmentId?: s
 
     if (filter?.classId) filters.push(`class = "${filter.classId}"`);
     if (filter?.assignmentId) filters.push(`assignment = "${filter.assignmentId}"`);
-    if (filter?.courseId) filters.push(`course = "${filter.courseId}"`);
+    
+    if (filter?.courseId) {
+      try {
+        const course = await pb.collection("courses").getOne(filter.courseId);
+        const courseInquiryIds = course.inquiries || [];
+        if (courseInquiryIds.length === 0) {
+            return []; // Si no hay consultas asociadas al curso, retornar vacío
+        }
+        
+        const idsCondition = courseInquiryIds.map((id: string) => `id = "${id}"`).join(" || ");
+        filters.push(`(${idsCondition})`);
+      } catch (error) {
+        console.error("Error al obtener el curso para filtrar consultas:", error);
+        return [];
+      }
+    }
+
     if (filter?.status) filters.push(`status = "${filter.status}"`);
     if (filter?.authorId) filters.push(`author = "${filter.authorId}"`);
 
@@ -100,9 +116,20 @@ export async function createInquiry(data: { title: string; description: string; 
 
     if (data.classId) newInquiry.class = data.classId;
     if (data.assignmentId) newInquiry.assignment = data.assignmentId;
-    if (data.courseId) newInquiry.course = data.courseId;
+    // No establecemos course en newInquiry porque inquiries no tiene campo course.
 
     const record = await pb.collection("inquiries").create(newInquiry);
+    
+    if (data.courseId) {
+      try {
+        await pb.collection("courses").update(data.courseId, {
+          "inquiries+": record.id
+        });
+      } catch (updateError) {
+        console.error("Error linking inquiry to course:", updateError);
+        // Podríamos eliminar la consulta creada si falla el enlace, pero por ahora solo logueamos
+      }
+    }
     
     revalidatePath("/inquiries");
     if (data.classId) revalidatePath(`/classes/${data.classId}`);

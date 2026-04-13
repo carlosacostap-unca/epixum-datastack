@@ -21,23 +21,16 @@ export default async function DocenteClasesPage() {
     courses = await pb.collection("courses").getFullList<Course>({
       filter: `teachers ~ "${user.id}"`,
       sort: "-created",
+      expand: "classes",
       requestKey: null,
     });
 
-    // Fetch classes for each course
-    coursesWithClasses = await Promise.all(courses.map(async (course) => {
-      let classes: Class[] = [];
-      try {
-        classes = await pb.collection("classes").getFullList<Class>({
-          filter: `course = "${course.id}"`,
-          sort: "-date",
-          requestKey: null,
-        });
-      } catch (e) {
-        console.error(`Error fetching classes for course ${course.id}:`, e);
-      }
+    // Fetch classes for each course using the expanded relation
+    coursesWithClasses = courses.map(course => {
+      const classes = course.expand?.classes || [];
+      classes.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
       return { course, classes };
-    }));
+    });
   } catch (error) {
     console.error("Error fetching courses with classes:", error);
   }
