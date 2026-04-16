@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import JSZip from "jszip";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import FormattedDate from "@/components/FormattedDate";
 
 interface StudentDeliveryProps {
   assignmentId: string;
@@ -427,7 +428,7 @@ export default function StudentDelivery({ assignmentId, delivery, studentName, a
                 
                 <div className="flex items-center gap-2 text-sm text-zinc-500 bg-zinc-50 dark:bg-zinc-800/50 py-2 px-3 rounded-md inline-flex">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                    <span>Entregado el <strong>{new Date(delivery.created).toLocaleDateString()}</strong> a las <strong>{new Date(delivery.created).toLocaleTimeString()}</strong></span>
+                    <span>Entregado el <strong><FormattedDate date={delivery.created} /></strong> a las <strong><FormattedDate date={delivery.created} showTime={true} formatString="HH:mm" /></strong></span>
                 </div>
             </div>
 

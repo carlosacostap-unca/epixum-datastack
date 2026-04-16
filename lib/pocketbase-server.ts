@@ -8,8 +8,6 @@ export async function createServerClient() {
   const cookieStore = await cookies();
   const token = cookieStore.get('pb_auth')?.value;
   
-  console.log("Servidor leyendo cookie 'pb_auth':", token ? "Token encontrado" : "No hay token");
-
   // Access via bracket notation to prevent build-time inlining and ensure runtime access
   const url = process.env['NEXT_PUBLIC_POCKETBASE_URL'];
   

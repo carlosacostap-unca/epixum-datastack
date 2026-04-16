@@ -15,6 +15,14 @@ export function EnrollmentForm({ availableCourses }: { availableCourses: { id: s
     setSuccess(false);
 
     const formData = new FormData(event.currentTarget);
+    
+    // Convertir fecha local a UTC
+    const birthDate = formData.get("birthDate") as string;
+    if (birthDate && !birthDate.includes('T')) {
+      const date = new Date(`${birthDate}T00:00:00`);
+      formData.set("birthDate", date.toISOString());
+    }
+
     const result = await submitEnrollmentRequest(formData);
 
     if (result.success) {

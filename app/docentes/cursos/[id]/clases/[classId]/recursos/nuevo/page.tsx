@@ -17,7 +17,7 @@ export default async function TeacherNewResourcePage(props: { params: Promise<{ 
   }
 
   const classData = await getClass(params.classId);
-  if (!classData || classData.course !== course.id) {
+  if (!classData || !course.classes?.includes(classData.id)) {
     redirect(`/docentes/cursos/${course.id}`);
   }
 

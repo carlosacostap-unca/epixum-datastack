@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { User } from "@/types";
 import { updateUserProfile } from "@/lib/actions-users";
+import FormattedDate from "@/components/FormattedDate";
 
 interface ProfileModalButtonProps {
   user: User;
@@ -258,7 +259,7 @@ export default function ProfileModalButton({ user, pocketbaseUrl, children, clas
                     <span className="material-symbols-outlined text-[var(--color-primary)] text-[20px]">calendar_month</span>
                     <span className="text-sm text-[var(--color-on-surface)]">
                       {user.birthDate 
-                        ? new Date(user.birthDate).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }) 
+                        ? <FormattedDate date={user.birthDate} options={{ day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }} />
                         : "Fecha de nacimiento no especificada"}
                     </span>
                   </div>

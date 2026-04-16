@@ -4,6 +4,7 @@ import { Delivery } from "@/types";
 import { useState } from "react";
 import { getDeliveryDownloadUrl } from "@/lib/actions";
 import Link from "next/link";
+import FormattedDate from "@/components/FormattedDate";
 
 interface TeacherDeliveriesProps {
   deliveries: Delivery[];
@@ -128,7 +129,7 @@ export default function TeacherDeliveries({ deliveries, assignmentId }: TeacherD
                     </button>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-zinc-500 dark:text-zinc-400">
-                    {new Date(delivery.created).toLocaleDateString()}
+                    <FormattedDate date={delivery.created} />
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm">
                     {delivery.status === 'published' ? (

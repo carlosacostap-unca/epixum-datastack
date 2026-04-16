@@ -1,9 +1,8 @@
-import { getCourse, getClassesByCourse } from "@/lib/data";
+import { getCourse, getUsers, getClassesByCourse } from "@/lib/data";
 import { getCurrentUser } from "@/lib/pocketbase-server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
+import FormattedDate from "@/components/FormattedDate";
 
 export default async function TeacherCourseManagementPage(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
@@ -46,6 +45,13 @@ export default async function TeacherCourseManagementPage(props: { params: Promi
             }`}>
               {course.status || 'EN CURSO'}
             </span>
+            <Link 
+              href={`/docentes/cursos/${course.id}/editar`}
+              className="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-[var(--color-surface-container-low)] border border-[var(--color-outline-variant)] text-[var(--color-on-surface-variant)] hover:text-[var(--color-primary)] hover:border-[var(--color-primary)] transition-colors ml-auto md:ml-0"
+            >
+              <span className="material-symbols-outlined text-[14px]">edit</span>
+              <span className="text-[10px] font-bold uppercase tracking-widest">Editar Curso</span>
+            </Link>
           </div>
           <h1 className="text-4xl md:text-6xl font-headline tracking-tight text-[var(--color-on-surface)] mb-6 leading-tight">
             {course.title}
@@ -131,12 +137,12 @@ export default async function TeacherCourseManagementPage(props: { params: Promi
                     <div className="flex flex-wrap items-center gap-2 md:gap-4 text-sm text-[var(--color-on-surface-variant)]">
                       <div className="flex items-center gap-1.5">
                         <span className="material-symbols-outlined text-[16px]">calendar_today</span>
-                        <span>{c.date ? format(new Date(c.date), "EEEE d 'de' MMMM", { locale: es }) : 'Sin fecha programada'}</span>
+                        <span>{c.date ? <FormattedDate date={c.date} formatString="EEEE d 'de' MMMM" /> : 'Sin fecha programada'}</span>
                       </div>
                       {c.date && (
                         <div className="flex items-center gap-1.5">
                           <span className="material-symbols-outlined text-[16px]">schedule</span>
-                          <span>{format(new Date(c.date), "HH:mm", { locale: es })} hs</span>
+                          <span><FormattedDate date={c.date} formatString="HH:mm" /> hs</span>
                         </div>
                       )}
                     </div>

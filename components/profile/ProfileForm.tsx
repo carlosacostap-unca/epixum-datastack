@@ -16,11 +16,18 @@ export default function ProfileForm({ user }: { user: User }) {
     setSuccess(null);
 
     const formData = new FormData(e.currentTarget);
+    
+    let birthDate = formData.get("birthDate") as string;
+    if (birthDate && !birthDate.includes('T')) {
+      const date = new Date(`${birthDate}T00:00:00`);
+      birthDate = date.toISOString();
+    }
+
     const data = {
       firstName: formData.get("firstName") as string,
       lastName: formData.get("lastName") as string,
       dni: formData.get("dni") as string,
-      birthDate: formData.get("birthDate") as string,
+      birthDate: birthDate,
       phone: formData.get("phone") as string,
     };
 
@@ -35,7 +42,15 @@ export default function ProfileForm({ user }: { user: User }) {
   };
 
   // Helper to format date for input type="date"
-  const formattedBirthDate = user.birthDate ? new Date(user.birthDate).toISOString().split('T')[0] : "";
+  const getLocalDateString = (isoDate: string | undefined) => {
+    if (!isoDate) return '';
+    const date = new Date(isoDate);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+  const formattedBirthDate = getLocalDateString(user.birthDate);
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">

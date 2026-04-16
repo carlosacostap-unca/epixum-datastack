@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Course, User, Class, Assignment, Inquiry } from '@/types';
 import { createCourse, updateCourse } from '@/lib/actions-courses';
 import RichTextEditor from '@/components/RichTextEditor';
+import UserMultiSelect from '@/components/UserMultiSelect';
 import Link from 'next/link';
 
 interface CourseFormProps {
@@ -33,6 +34,15 @@ export default function CourseForm({
 
   const isEdit = !!course;
 
+  const getLocalDateString = (isoDate: string | undefined) => {
+    if (!isoDate) return '';
+    const date = new Date(isoDate);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
@@ -41,6 +51,18 @@ export default function CourseForm({
     const formData = new FormData(e.currentTarget);
     // Asegurarse de inyectar la descripción del editor en el form data
     formData.set('description', description);
+
+    // Convertir fechas locales a UTC
+    const startDate = formData.get("startDate") as string;
+    if (startDate && !startDate.includes('T')) {
+      const date = new Date(`${startDate}T00:00:00`);
+      formData.set("startDate", date.toISOString());
+    }
+    const endDate = formData.get("endDate") as string;
+    if (endDate && !endDate.includes('T')) {
+      const date = new Date(`${endDate}T00:00:00`);
+      formData.set("endDate", date.toISOString());
+    }
 
     try {
       if (isEdit) {
@@ -96,7 +118,7 @@ export default function CourseForm({
             type="date"
             id="startDate"
             name="startDate"
-            defaultValue={course?.startDate ? new Date(course.startDate).toISOString().split('T')[0] : ''}
+            defaultValue={getLocalDateString(course?.startDate)}
             className={inputClass}
           />
         </div>
@@ -107,7 +129,7 @@ export default function CourseForm({
             type="date"
             id="endDate"
             name="endDate"
-            defaultValue={course?.endDate ? new Date(course.endDate).toISOString().split('T')[0] : ''}
+            defaultValue={getLocalDateString(course?.endDate)}
             className={inputClass}
           />
         </div>
@@ -129,39 +151,23 @@ export default function CourseForm({
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-zinc-200 dark:border-zinc-700">
         <div>
-          <label htmlFor="teachers" className={labelClass}>Docentes Asignados</label>
-          <select
-            id="teachers"
-            name="teachers"
-            multiple
-            defaultValue={course?.teachers || []}
-            className={`${inputClass} h-32`}
-          >
-            {teachers.map(teacher => (
-              <option key={teacher.id} value={teacher.id}>
-                {teacher.name || teacher.username} {teacher.role === 'admin' ? '(Admin)' : ''}
-              </option>
-            ))}
-          </select>
-          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">Mantén presionado Ctrl o Cmd para seleccionar múltiples</p>
+          <UserMultiSelect 
+            users={teachers} 
+            defaultSelected={course?.teachers || []} 
+            name="teachers" 
+            label="Docentes Asignados" 
+            placeholder="Buscar por nombre o email..." 
+          />
         </div>
 
         <div>
-          <label htmlFor="students" className={labelClass}>Estudiantes Matriculados</label>
-          <select
-            id="students"
-            name="students"
-            multiple
-            defaultValue={course?.students || []}
-            className={`${inputClass} h-32`}
-          >
-            {students.map(student => (
-              <option key={student.id} value={student.id}>
-                {student.name || student.username}
-              </option>
-            ))}
-          </select>
-          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">Mantén presionado Ctrl o Cmd para seleccionar múltiples</p>
+          <UserMultiSelect 
+            users={students} 
+            defaultSelected={course?.students || []} 
+            name="students" 
+            label="Estudiantes Matriculados" 
+            placeholder="Buscar por nombre o email..." 
+          />
         </div>
       </div>
 

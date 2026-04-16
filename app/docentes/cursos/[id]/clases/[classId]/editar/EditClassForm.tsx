@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { updateClass } from "@/lib/actions";
+import { updateClass, deleteClass } from "@/lib/actions";
 import { Class } from "@/types";
 import { format } from "date-fns";
 
@@ -42,6 +42,25 @@ export default function EditClassForm({ courseId, classData }: { courseId: strin
       router.push(`/docentes/cursos/${courseId}/clases/${classData.id}`);
     } else {
       setError(result.error || "Error al actualizar la clase");
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!confirm("¿Estás seguro de que deseas eliminar esta clase? Esta acción no se puede deshacer.")) {
+      return;
+    }
+    
+    setIsLoading(true);
+    setError("");
+    
+    const result = await deleteClass(classData.id, courseId);
+    
+    setIsLoading(false);
+    
+    if (result.success) {
+      router.push(`/docentes/cursos/${courseId}`);
+    } else {
+      setError(result.error || "Error al eliminar la clase");
     }
   };
 
@@ -115,32 +134,43 @@ export default function EditClassForm({ courseId, classData }: { courseId: strin
         </div>
       </div>
 
-      <div className="flex flex-col-reverse sm:flex-row justify-end gap-4 sm:gap-6 mt-4 w-full">
+      <div className="flex flex-col-reverse sm:flex-row justify-between gap-4 sm:gap-6 mt-4 w-full">
         <button
           type="button"
-          onClick={() => router.back()}
-          className="w-full sm:w-auto px-8 py-4 bg-transparent text-[var(--color-on-surface)] hover:bg-[var(--color-surface-container-low)] rounded-full font-bold text-sm transition-colors border border-transparent hover:border-[var(--color-outline-variant)] flex justify-center items-center"
+          onClick={handleDelete}
           disabled={isLoading}
+          className="w-full sm:w-auto px-6 py-4 bg-transparent text-[var(--color-error)] hover:bg-[var(--color-error)]/10 rounded-full font-bold text-sm transition-colors border border-transparent hover:border-[var(--color-error)]/30 flex justify-center items-center gap-2"
         >
-          Cancelar
+          <span className="material-symbols-outlined text-lg">delete</span>
+          Eliminar Clase
         </button>
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="w-full sm:w-auto px-8 py-4 bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-container)] text-[#000000] rounded-full hover:opacity-90 transition-opacity font-bold text-sm shadow-[0_0_20px_rgba(63,255,139,0.2)] disabled:opacity-50 flex items-center justify-center gap-2"
-        >
-          {isLoading ? (
-            <>
-              <span className="material-symbols-outlined animate-spin">progress_activity</span>
-              Guardando...
-            </>
-          ) : (
-            <>
-              <span className="material-symbols-outlined text-lg">save</span>
-              Guardar Cambios
-            </>
-          )}
-        </button>
+        <div className="flex flex-col-reverse sm:flex-row gap-4 sm:gap-6 w-full sm:w-auto">
+          <button
+            type="button"
+            onClick={() => router.back()}
+            className="w-full sm:w-auto px-8 py-4 bg-transparent text-[var(--color-on-surface)] hover:bg-[var(--color-surface-container-low)] rounded-full font-bold text-sm transition-colors border border-transparent hover:border-[var(--color-outline-variant)] flex justify-center items-center"
+            disabled={isLoading}
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="w-full sm:w-auto px-8 py-4 bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-container)] text-[#000000] rounded-full hover:opacity-90 transition-opacity font-bold text-sm shadow-[0_0_20px_rgba(63,255,139,0.2)] disabled:opacity-50 flex items-center justify-center gap-2"
+          >
+            {isLoading ? (
+              <>
+                <span className="material-symbols-outlined animate-spin">progress_activity</span>
+                Guardando...
+              </>
+            ) : (
+              <>
+                <span className="material-symbols-outlined text-lg">save</span>
+                Guardar Cambios
+              </>
+            )}
+          </button>
+        </div>
       </div>
     </form>
   );

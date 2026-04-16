@@ -107,3 +107,46 @@ export async function deleteCourse(id: string) {
     throw new Error('Failed to delete course');
   }
 }
+
+export async function updateCourseDocente(id: string, formData: FormData) {
+  const pb = await createServerClient();
+  const user = pb.authStore.model;
+  
+  if (!user || user.role !== 'docente') {
+    throw new Error('Unauthorized');
+  }
+  
+  const title = formData.get('title') as string;
+  const description = formData.get('description') as string;
+  let startDate = formData.get('startDate') as string;
+  let endDate = formData.get('endDate') as string;
+  const status = formData.get('status') as 'borrador' | 'en curso' | 'finalizado';
+  
+  if (startDate && !startDate.includes('T')) {
+    startDate = `${startDate}T12:00:00.000Z`;
+  }
+  
+  if (endDate && !endDate.includes('T')) {
+    endDate = `${endDate}T12:00:00.000Z`;
+  }
+
+  // Los docentes solo pueden actualizar campos básicos, no listas de estudiantes/profesores
+  const data = {
+    title,
+    description,
+    startDate,
+    endDate,
+    status: status || 'borrador',
+  };
+
+  try {
+    // PocketBase validará si el docente tiene permisos (por regla de API: @request.auth.id ?= teachers.id)
+    const record = await pb.collection('courses').update(id, data);
+    revalidatePath(`/docentes/cursos/${id}`);
+    revalidatePath('/docentes');
+    return { success: true, record };
+  } catch (error) {
+    console.error('Error updating course by docente:', error);
+    return { success: false, error: 'Error al actualizar el curso' };
+  }
+}

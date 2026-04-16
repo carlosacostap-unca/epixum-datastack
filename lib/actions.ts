@@ -179,8 +179,11 @@ export async function createClassForCourse(courseId: string, formData: FormData)
     const newClass = await pb.collection('classes').create(data);
     
     // Actualizar el curso para incluir esta nueva clase
+    // Usamos el enfoque de obtener y actualizar para evitar problemas con modificadores
+    const course = await pb.collection('courses').getOne(courseId);
+    const currentClasses = course.classes || [];
     await pb.collection('courses').update(courseId, {
-      "classes+": newClass.id
+      classes: [...currentClasses, newClass.id]
     });
     
     revalidatePath(`/docentes/cursos/${courseId}`);
@@ -265,7 +268,7 @@ export async function updateClass(classId: string, formData: FormData) {
   }
 }
 
-export async function deleteClass(classId: string) {
+export async function deleteClass(classId: string, courseId?: string) {
   const pb = await createServerClient();
   const user = pb.authStore.model;
 
@@ -275,6 +278,22 @@ export async function deleteClass(classId: string) {
 
   try {
     await pb.collection('classes').delete(classId);
+    
+    // Si tenemos el ID del curso, también podemos actualizar el curso para remover la clase
+    if (courseId) {
+      try {
+        const course = await pb.collection('courses').getOne(courseId);
+        const currentClasses = course.classes || [];
+        const newClasses = currentClasses.filter((id: string) => id !== classId);
+        await pb.collection('courses').update(courseId, {
+          classes: newClasses
+        });
+        revalidatePath(`/docentes/cursos/${courseId}`);
+      } catch (err) {
+        console.error('Failed to update course after deleting class:', err);
+      }
+    }
+    
     revalidatePath('/');
     return { success: true };
   } catch (error) {
