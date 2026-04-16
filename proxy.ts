@@ -17,8 +17,8 @@ export function proxy(request: NextRequest) {
   const pbAuth = request.cookies.get('pb_auth');
   const isLoggedIn = !!pbAuth?.value;
 
-  // Allow access to home page for unauthenticated users
-  if (!isLoggedIn && path !== '/') {
+  // Allow access to home page and account linking for unauthenticated users
+  if (!isLoggedIn && path !== '/' && path !== '/vincular-cuenta') {
     const loginUrl = new URL('/', request.url);
     // Optional: Add ?next=path to redirect back after login
     // loginUrl.searchParams.set('next', path);
