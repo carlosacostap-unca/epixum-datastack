@@ -3,6 +3,7 @@
 import { useState } from "react";
 import pb from "@/lib/pocketbase";
 import { setAuthCookieAndRedirect } from "@/lib/actions-auth";
+import Link from "next/link";
 
 export default function LoginScreen() {
   const [isLoading, setIsLoading] = useState(false);
@@ -90,6 +91,17 @@ export default function LoginScreen() {
                 </>
               )}
             </div>
+          </button>
+        </div>
+
+        <div className="mt-8 text-center text-sm text-[var(--color-on-surface-variant)] z-50 relative pointer-events-auto">
+          <p className="mb-2">¿Fuiste registrado con una cuenta que no es de Google?</p>
+          <button 
+            type="button"
+            onClick={() => window.location.href = '/vincular-cuenta'} 
+            className="text-[var(--color-primary)] hover:underline font-medium relative z-50 inline-block p-2 cursor-pointer pointer-events-auto bg-transparent border-none"
+          >
+            Vincula tu cuenta de Google aquí
           </button>
         </div>
       </div>

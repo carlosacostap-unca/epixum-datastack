@@ -1,9 +1,10 @@
 import { createServerClient, getCurrentUser } from "@/lib/pocketbase-server";
 import { redirect } from "next/navigation";
-import { EnrollmentRequest } from "@/types";
+import { EnrollmentRequest, AccountRequest } from "@/types";
 import { ResendEmailsButton } from "@/components/ResendEmailsButton";
 import FormattedDate from "@/components/FormattedDate";
 import { updateEnrollmentStatus } from "@/lib/actions-enrollment";
+import { updateAccountRequestStatus } from "@/lib/actions-account-requests";
 
 export const dynamic = 'force-dynamic';
 
@@ -16,6 +17,7 @@ export default async function DocenteSolicitudesPage() {
 
   const pb = await createServerClient();
   let enrollments: EnrollmentRequest[] = [];
+  let accountRequests: AccountRequest[] = [];
   try {
     // Para simplificar, obtenemos todas las solicitudes (idealmente se filtrarían por los cursos del docente)
     // El listRule de PocketBase ya podría estar filtrando si se configuró así.
@@ -23,8 +25,12 @@ export default async function DocenteSolicitudesPage() {
       sort: "-created",
       expand: "courses"
     });
+    
+    accountRequests = await pb.collection("account_requests").getFullList<AccountRequest>({
+      sort: "-created"
+    });
   } catch (error) {
-    console.error("Error fetching enrollments:", error);
+    console.error("Error fetching requests:", error);
   }
 
   return (
@@ -122,6 +128,80 @@ export default async function DocenteSolicitudesPage() {
                           }}>
                             <button type="submit" className="w-12 h-12 flex items-center justify-center rounded-full bg-[var(--color-surface-container-highest)] text-[var(--color-error)] hover:bg-[var(--color-error)] hover:text-[var(--color-on-error)] transition-all hover:shadow-[0_0_20px_rgba(255,84,73,0.2)] hover:scale-[1.05] active:scale-95" title="Rechazar Solicitud">
                               <span className="material-symbols-outlined text-2xl">close</span>
+                            </button>
+                          </form>
+                        </div>
+                      ) : (
+                        <span className="text-sm text-[var(--color-on-surface-variant)] italic">
+                          Gestionado
+                        </span>
+                      )}
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <h2 className="text-2xl md:text-3xl font-headline tracking-tight text-[var(--color-on-surface)] mb-4 mt-12">
+        Solicitudes de <span className="text-[var(--color-primary)]">Vinculación de Cuenta</span>
+      </h2>
+      <div className="bg-[var(--color-surface-container-low)] rounded-[2rem] md:rounded-[3rem] overflow-hidden p-2 md:p-4">
+        <div className="overflow-x-auto bg-[var(--color-surface-container)] rounded-[1.5rem] md:rounded-[2rem]">
+          <table className="w-full text-left border-collapse min-w-[800px]">
+            <thead>
+              <tr className="border-b border-transparent">
+                <th className="px-8 py-6 font-headline font-semibold text-sm text-[var(--color-on-surface-variant)] uppercase tracking-wider">Estudiante</th>
+                <th className="px-8 py-6 font-headline font-semibold text-sm text-[var(--color-on-surface-variant)] uppercase tracking-wider">DNI</th>
+                <th className="px-8 py-6 font-headline font-semibold text-sm text-[var(--color-on-surface-variant)] uppercase tracking-wider">Correo Google</th>
+                <th className="px-8 py-6 font-headline font-semibold text-sm text-[var(--color-on-surface-variant)] uppercase tracking-wider">Estado</th>
+                <th className="px-8 py-6 font-headline font-semibold text-sm text-[var(--color-on-surface-variant)] uppercase tracking-wider text-right">Acciones</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-transparent">
+              {accountRequests.length === 0 ? (
+                <tr>
+                  <td colSpan={5} className="px-8 py-16 text-center text-[var(--color-on-surface-variant)]">
+                    <div className="flex flex-col items-center justify-center gap-4">
+                      <span className="material-symbols-outlined text-5xl opacity-50">inbox</span>
+                      <p className="text-lg">No hay solicitudes de vinculación pendientes.</p>
+                    </div>
+                  </td>
+                </tr>
+              ) : (
+                accountRequests.map((req) => (
+                  <tr key={req.id} className="hover:bg-[var(--color-surface-container-highest)] transition-colors group">
+                    <td className="px-8 py-6">
+                      <div className="font-medium text-lg text-[var(--color-on-surface)]">
+                        {req.firstName} {req.lastName}
+                      </div>
+                    </td>
+                    <td className="px-8 py-6">
+                      <div className="text-base text-[var(--color-on-surface-variant)]">{req.dni}</div>
+                    </td>
+                    <td className="px-8 py-6">
+                      <div className="text-base text-[var(--color-on-surface-variant)]">{req.googleEmail}</div>
+                    </td>
+                    <td className="px-8 py-6">
+                      <span className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold tracking-wide uppercase ${
+                        req.status === 'pendiente' ? 'bg-[#FFB4A4]/10 text-[#FFB4A4]' : 
+                        'bg-[var(--color-primary)]/10 text-[var(--color-primary)]'
+                      }`}>
+                        <span className="w-2 h-2 rounded-full bg-current"></span>
+                        {req.status === 'pendiente' ? 'Pendiente' : 'Resuelto'}
+                      </span>
+                    </td>
+                    <td className="px-8 py-6 text-right">
+                      {req.status === 'pendiente' ? (
+                        <div className="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <form action={async () => {
+                            "use server";
+                            await updateAccountRequestStatus(req.id, "resuelto");
+                          }}>
+                            <button type="submit" className="w-12 h-12 flex items-center justify-center rounded-full bg-[var(--color-surface-container-highest)] text-[var(--color-primary)] hover:bg-gradient-to-br hover:from-[var(--color-primary)] hover:to-[var(--color-primary-container)] hover:text-[#000000] transition-all hover:shadow-[0_0_20px_rgba(63,255,139,0.2)] hover:scale-[1.05] active:scale-95" title="Marcar como Resuelto">
+                              <span className="material-symbols-outlined text-2xl">check</span>
                             </button>
                           </form>
                         </div>

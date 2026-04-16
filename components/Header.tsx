@@ -56,8 +56,8 @@ export default function Header() {
     };
   }, []);
 
-  // No renderizar el Header en la página de inicio (ahora login)
-  if (pathname === "/") {
+  // No renderizar el Header en la página de inicio (ahora login) ni en la pantalla de vincular cuenta
+  if (pathname === "/" || pathname === "/vincular-cuenta") {
     return null;
   }
 

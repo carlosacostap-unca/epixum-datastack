@@ -127,3 +127,12 @@ export interface EnrollmentRequest extends BaseModel {
   };
 }
 
+export interface AccountRequest extends BaseModel {
+  firstName: string;
+  lastName: string;
+  dni: string;
+  googleEmail: string;
+  status: 'pendiente' | 'resuelto';
+}
+
+
