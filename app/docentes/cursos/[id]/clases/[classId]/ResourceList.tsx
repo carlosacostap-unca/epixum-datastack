@@ -101,19 +101,33 @@ export default function ResourceList({ links, classId }: ResourceListProps) {
                 </p>
               </div>
             </a>
-            
-            <div className="flex items-center gap-2 pl-4 border-l border-[var(--color-outline-variant)]">
+            <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+              <button 
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  // Extract courseId from URL using pathname since it's not passed as prop
+                  const currentPath = window.location.pathname;
+                  const courseIdMatch = currentPath.match(/\/cursos\/([^\/]+)/);
+                  const courseId = courseIdMatch ? courseIdMatch[1] : '';
+                  if (courseId) {
+                    router.push(`/docentes/cursos/${courseId}/clases/${classId}/recursos/${link.id}/editar`);
+                  }
+                }}
+                className="w-10 h-10 rounded-full flex items-center justify-center text-[var(--color-on-surface-variant)] hover:text-[var(--color-primary)] hover:bg-[var(--color-primary)]/10 transition-colors"
+                title="Editar recurso"
+              >
+                <span className="material-symbols-outlined text-[20px]">edit</span>
+              </button>
               <button 
                 onClick={(e) => handleDelete(e, link.id)}
                 disabled={deletingId === link.id}
-                className="w-10 h-10 rounded-full flex items-center justify-center text-[var(--color-on-surface-variant)] hover:bg-[var(--color-error)]/10 hover:text-[var(--color-error)] transition-colors disabled:opacity-50"
+                className="w-10 h-10 rounded-full flex items-center justify-center text-[var(--color-on-surface-variant)] hover:text-[var(--color-error)] hover:bg-[var(--color-error)]/10 transition-colors disabled:opacity-50"
                 title="Eliminar recurso"
               >
-                {deletingId === link.id ? (
-                  <span className="material-symbols-outlined text-[18px] animate-spin">progress_activity</span>
-                ) : (
-                  <span className="material-symbols-outlined text-[18px]">delete</span>
-                )}
+                <span className="material-symbols-outlined text-[20px]">
+                  {deletingId === link.id ? 'progress_activity' : 'delete'}
+                </span>
               </button>
             </div>
           </div>
