@@ -3,7 +3,7 @@
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { createLink, getResourceUploadUrl } from "@/lib/actions";
+import { createLink } from "@/lib/actions";
 
 interface NewResourceFormProps {
   courseId: string;
@@ -32,40 +32,19 @@ export default function NewResourceForm({ courseId, classId }: NewResourceFormPr
       const title = formData.get('title') as string;
       let url = formData.get('url') as string;
 
-      if (resourceType === 'file') {
-        if (!selectedFile) {
-            throw new Error("Debes seleccionar un archivo");
-        }
-        
-        // Get presigned URL
-        const uploadAuth = await getResourceUploadUrl(selectedFile.name, selectedFile.type);
-        if (!uploadAuth.success || !uploadAuth.url) {
-            throw new Error(uploadAuth.error || "Error al obtener URL de subida");
-        }
-
-        // Upload file
-        const uploadRes = await fetch(uploadAuth.url, {
-            method: "PUT",
-            body: selectedFile,
-            headers: {
-                "Content-Type": selectedFile.type
-            }
-        });
-
-        if (!uploadRes.ok) {
-            throw new Error("Error al subir el archivo");
-        }
-
-        // Clean URL
-        url = uploadAuth.url.split('?')[0];
+      if (resourceType === 'file' && !selectedFile) {
+        throw new Error("Debes seleccionar un archivo");
       }
 
       // Prepare final form data
       const finalFormData = new FormData();
       finalFormData.append('title', title);
-      finalFormData.append('url', url);
+      finalFormData.append('url', url || '');
       finalFormData.append('type', resourceType);
       finalFormData.append("classId", classId);
+      if (resourceType === 'file' && selectedFile) {
+        finalFormData.append('file', selectedFile);
+      }
 
       const result = await createLink(finalFormData);
 

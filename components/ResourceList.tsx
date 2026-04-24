@@ -9,9 +9,7 @@ interface ResourceListProps {
 
 export default function ResourceList({ links }: ResourceListProps) {
   const isFileResource = (link: LinkType) => {
-    return link.type === 'file' || 
-           link.url.includes('idrivee2.com') || 
-           link.url.includes('epixum-javascript-storage');
+    return link.type === 'file';
   };
 
   const handleResourceClick = async (e: React.MouseEvent, link: LinkType) => {

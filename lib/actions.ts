@@ -59,25 +59,18 @@ export async function getResourceDownloadUrl(linkId: string) {
   try {
     const link = await pb.collection('links').getOne(linkId);
 
-    // Extract key from url
-    // Assuming url is like https://endpoint/bucket/filename.ext or just filename
-    let key = link.url;
-    if (link.url.startsWith('http')) {
-        const urlObj = new URL(link.url);
-        // Extract filename from path
-        const pathname = urlObj.pathname;
-        const filename = pathname.split('/').pop() || '';
-        // Decode URI component to handle spaces and special characters
-        key = decodeURIComponent(filename);
+    // Si tiene campo file de PocketBase, generar la URL del archivo
+    if (link.file) {
+      const url = pb.files.getUrl(link, link.file);
+      return { success: true, url };
     }
 
-    if (!key) {
-        return { success: false, error: 'Invalid file key' };
+    // Fallback: devolver la URL almacenada (enlaces web o archivos migrados)
+    if (link.url) {
+      return { success: true, url: link.url };
     }
 
-    const downloadUrl = await getPresignedDownloadUrl(key);
-    return { success: true, url: downloadUrl };
-
+    return { success: false, error: 'No file or URL found' };
   } catch (error) {
     console.error('Failed to get resource download URL:', error);
     return { success: false, error: 'Failed to get resource download URL' };
@@ -483,31 +476,43 @@ export async function createLink(formData: FormData) {
 
   const title = formData.get('title') as string;
   const url = formData.get('url') as string;
-  const type = formData.get('type') as 'link' | 'file' || 'link';
+  const type = (formData.get('type') as 'link' | 'file') || 'link';
   const classId = formData.get('classId') as string;
   const assignmentId = formData.get('assignmentId') as string;
+  const file = formData.get('file') as File | null;
 
-  if (!title || !url || (!classId && !assignmentId)) {
-     return { success: false, error: 'Title, URL and Parent ID are required' };
+  if (!title || (type !== 'file' && !url) || (!classId && !assignmentId)) {
+    return { success: false, error: 'Title, URL and Parent ID are required' };
   }
 
   try {
-    const data: any = {
-      title,
-      url,
-      type,
-    };
-    if (classId) data.class = classId;
-    if (assignmentId) data.assignment = assignmentId;
-    
-    await pb.collection('links').create(data);
-    
+    const data = new FormData();
+    data.append('title', title);
+    data.append('type', type);
+    if (classId) data.append('class', classId);
+    if (assignmentId) data.append('assignment', assignmentId);
+
+    if (type === 'file' && file && file.size > 0) {
+      data.append('file', file);
+      // No enviamos url vacío; se genera tras la creación a partir del archivo subido
+    } else {
+      data.append('url', url);
+    }
+
+    const record = await pb.collection('links').create(data);
+
+    // Si se subió un archivo, guardar la URL de PocketBase en el campo url
+    if (type === 'file' && record.file) {
+      const fileUrl = pb.files.getUrl(record, record.file);
+      await pb.collection('links').update(record.id, { url: fileUrl });
+    }
+
     if (classId) {
       revalidatePath(`/classes/${classId}`);
-      revalidatePath('/docentes', 'layout'); // Revalidate all teacher routes
+      revalidatePath('/docentes', 'layout');
     }
     if (assignmentId) revalidatePath(`/assignments/${assignmentId}`);
-    
+
     return { success: true };
   } catch (error) {
     console.error('Failed to create link:', error);
@@ -528,15 +533,26 @@ export async function updateLink(linkId: string, formData: FormData) {
   const type = formData.get('type') as 'link' | 'file';
   const classId = formData.get('classId') as string;
   const assignmentId = formData.get('assignmentId') as string;
+  const file = formData.get('file') as File | null;
 
   try {
-    const data: any = {
-      title,
-      url,
-    };
-    if (type) data.type = type;
+    const data = new FormData();
+    data.append('title', title);
+    if (type) data.append('type', type);
 
-    await pb.collection('links').update(linkId, data);
+    if (type === 'file' && file && file.size > 0) {
+      data.append('file', file);
+    } else if (url) {
+      data.append('url', url);
+    }
+
+    const record = await pb.collection('links').update(linkId, data);
+
+    // Si se subió un archivo nuevo, actualizar la URL
+    if (type === 'file' && file && file.size > 0 && record.file) {
+      const fileUrl = pb.files.getUrl(record, record.file);
+      await pb.collection('links').update(record.id, { url: fileUrl });
+    }
     
     if (classId) {
       revalidatePath(`/classes/${classId}`);
