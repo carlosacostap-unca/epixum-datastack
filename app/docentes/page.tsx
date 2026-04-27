@@ -84,6 +84,41 @@ export default async function DocentesPage() {
           ))
         )}
       </div>
+
+      {/* WhatsApp Community Section */}
+      <div className="mt-12 bg-[#25D366]/5 rounded-[2.5rem] p-8 md:p-12 border border-[#25D366]/20 shadow-[0_0_30px_rgba(37,211,102,0.1)] flex flex-col md:flex-row items-center gap-8 md:gap-16 relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-64 h-64 bg-[#25D366]/10 blur-[60px] -z-10 rounded-full pointer-events-none"></div>
+        <div className="flex-1">
+          <div className="flex items-center gap-3 mb-6">
+            <span className="w-2 h-2 rounded-full bg-[#25D366] shadow-[0_0_10px_#25D366]"></span>
+            <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#25D366]">
+              Comunidad
+            </span>
+          </div>
+          <h2 className="text-3xl md:text-4xl font-headline font-bold text-[var(--color-on-surface)] mb-4">
+            Únete a nuestro grupo de <span className="text-[#25D366]">WhatsApp</span>
+          </h2>
+          <p className="text-[var(--color-on-surface-variant)] text-lg mb-8 leading-relaxed max-w-2xl">
+            Mantente en contacto directo con la comunidad educativa, comparte novedades y coordina más fácilmente. Puedes unirte escaneando el código QR o haciendo clic en el botón.
+          </p>
+          <a 
+            href="https://chat.whatsapp.com/G4Us5yY1obG0tJte1FPAQC" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-3 bg-[#25D366] hover:bg-[#20bd5a] text-zinc-900 font-bold py-4 px-8 rounded-full transition-colors"
+          >
+            <span className="material-symbols-outlined">chat</span>
+            Unirme al grupo
+          </a>
+        </div>
+        <div className="bg-white p-4 rounded-3xl shadow-xl flex-shrink-0 border border-white/10">
+          <img 
+            src="/shared_qr_code.png" 
+            alt="Código QR de la Comunidad de WhatsApp" 
+            className="w-48 h-48 md:w-56 md:h-56 object-cover rounded-xl"
+          />
+        </div>
+      </div>
     </div>
   );
 }
