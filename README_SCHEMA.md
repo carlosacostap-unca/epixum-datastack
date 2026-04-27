@@ -41,7 +41,8 @@ Para que el rol "Docente" pueda gestionar el contenido, debes configurar las sig
 
 **Collection: `users`**
 
-- **List/View Rule**: `id = @request.auth.id || @request.auth.role = "admin"`
+- **List/View Rule**: `id = @request.auth.id || @request.auth.role = "admin" || @request.auth.role = "docente"`
+  - *Nota*: Permite a los docentes ver los perfiles de los estudiantes para listarlos en los cursos.
 - **Create Rule**: `""` (Público, para permitir registro)
 - **Update Rule**: `(id = @request.auth.id && @request.body.role:isset = false) || @request.auth.role = "admin"`
   - *Nota*: Esto permite que los usuarios editen su perfil pero **NO** su rol. Solo los admins pueden cambiar roles.
