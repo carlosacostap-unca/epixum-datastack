@@ -36,26 +36,30 @@ export default function NewResourceForm({ courseId, classId }: NewResourceFormPr
         throw new Error("Debes seleccionar un archivo");
       }
 
+      let shouldUploadWithPocketBase = false;
+
       if (resourceType === 'file' && selectedFile) {
         const uploadAuth = await getResourceUploadUrl(selectedFile.name, selectedFile.type || "application/octet-stream");
 
-        if (!uploadAuth.success || !uploadAuth.url) {
+        if ('storageUnavailable' in uploadAuth && uploadAuth.storageUnavailable) {
+          shouldUploadWithPocketBase = true;
+        } else if (!uploadAuth.success || !uploadAuth.url) {
           throw new Error(uploadAuth.error || "Error al obtener URL de subida");
+        } else {
+          const uploadRes = await fetch(uploadAuth.url, {
+            method: "PUT",
+            body: selectedFile,
+            headers: {
+              "Content-Type": selectedFile.type || "application/octet-stream",
+            },
+          });
+
+          if (!uploadRes.ok) {
+            throw new Error("Error al subir el archivo. Verificá tu conexión e intentá nuevamente.");
+          }
+
+          url = uploadAuth.url.split("?")[0];
         }
-
-        const uploadRes = await fetch(uploadAuth.url, {
-          method: "PUT",
-          body: selectedFile,
-          headers: {
-            "Content-Type": selectedFile.type || "application/octet-stream",
-          },
-        });
-
-        if (!uploadRes.ok) {
-          throw new Error("Error al subir el archivo. Verificá tu conexión e intentá nuevamente.");
-        }
-
-        url = uploadAuth.url.split("?")[0];
       }
 
       // Prepare final form data
@@ -64,6 +68,9 @@ export default function NewResourceForm({ courseId, classId }: NewResourceFormPr
       finalFormData.append('url', url || '');
       finalFormData.append('type', resourceType);
       finalFormData.append("classId", classId);
+      if (resourceType === 'file' && selectedFile && shouldUploadWithPocketBase) {
+        finalFormData.append('file', selectedFile);
+      }
 
       const result = await createLink(finalFormData);
 

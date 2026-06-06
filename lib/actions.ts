@@ -39,6 +39,14 @@ export async function getResourceUploadUrl(filename: string, fileType: string) {
     return { success: false, error: 'Unauthorized' };
   }
 
+  if (!process.env.IDRIVE_BUCKET_NAME) {
+    return {
+      success: false,
+      error: 'Almacenamiento externo no configurado',
+      storageUnavailable: true,
+    };
+  }
+
   try {
     const { url, fields } = await getPresignedUploadUrl(filename, fileType);
     return { success: true, url, fields };
