@@ -101,16 +101,46 @@ Para que el rol "Docente" pueda gestionar el contenido, debes configurar las sig
 - **Fields**:
     - `assignment`: Relation (Single, Required) -> Collection: `assignments`
     - `student`: Relation (Single, Required) -> Collection: `users`
-    - `repositoryUrl`: URL (Required)
+    - `repositoryUrl`: URL (Optional, compatibilidad con entregas antiguas o storage externo)
+    - `file`: File (Optional, archivo de entrega actual en PocketBase)
+    - `grade`: Number
+    - `feedback`: Text
+    - `verdict`: Select (options: "Aprobado", "Desaprobado", "Corregir y reenviar")
+    - `status`: Select (options: "pending", "draft", "published", default: "pending")
 - **Constraints**:
     - Unique index on `assignment` + `student` (Un estudiante solo puede tener una entrega por TP)
+    - La entrega fuera de término se determina comparando `created` (o `updated` cuando el reenvío vuelve a `pending`) contra `assignments.dueDate`; no requiere un campo adicional.
 - **API Rules**:
     - **List/View Rule**: `student = @request.auth.id || @request.auth.role = "docente" || @request.auth.role = "admin"`
         - *Nota*: Los estudiantes solo ven sus entregas; docentes/admins ven todas.
     - **Create Rule**: `@request.auth.id != "" && @request.auth.role = "estudiante"`
-    - **Update Rule**: `student = @request.auth.id || @request.auth.role = "admin"`
-        - *Nota*: Estudiantes pueden modificar su entrega.
+    - **Update Rule**: `student = @request.auth.id || @request.auth.role = "docente" || @request.auth.role = "admin"`
+        - *Nota*: Estudiantes pueden modificar/reenviar su entrega; docentes/admins pueden guardar borradores y publicar evaluaciones.
     - **Delete Rule**: `student = @request.auth.id || @request.auth.role = "admin"`
+
+## 5.1. Colección: `delivery_attempts` (Histórico de entregas)
+- **Name**: `delivery_attempts`
+- **Type**: `Base`
+- **Fields**:
+    - `delivery`: Relation (Single, Required) -> Collection: `deliveries`
+    - `assignment`: Relation (Single, Required) -> Collection: `assignments`
+    - `student`: Relation (Single, Required) -> Collection: `users`
+    - `version`: Number (Required, entero)
+    - `repositoryUrl`: URL (Optional, compatibilidad con archivos antiguos o storage externo)
+    - `file`: File (Optional, copia del archivo entregado en esa versión)
+    - `submittedAt`: Date (Required, fecha de envío de esa versión)
+    - `grade`: Number
+    - `feedback`: Text
+    - `verdict`: Select (options: "Aprobado", "Desaprobado", "Corregir y reenviar")
+    - `status`: Select (options: "pending", "draft", "published")
+    - `evaluatedAt`: Date
+- **Constraints**:
+    - Unique index on `delivery` + `version`.
+- **API Rules**:
+    - **List/View Rule**: `student = @request.auth.id || @request.auth.role = "docente" || @request.auth.role = "admin"`
+    - **Create Rule**: `@request.body.student = @request.auth.id || @request.auth.role = "docente" || @request.auth.role = "admin"`
+    - **Update Rule**: `@request.auth.role = "docente" || @request.auth.role = "admin"`
+    - **Delete Rule**: `@request.auth.role = "admin"`
 
 ## 6. Colección: `teams`
 - **Name**: `teams`

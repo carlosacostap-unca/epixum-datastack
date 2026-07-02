@@ -9,9 +9,34 @@ import FormattedDate from "@/components/FormattedDate";
 interface TeacherDeliveriesProps {
   deliveries: Delivery[];
   assignmentId: string;
+  dueDate?: string;
 }
 
-export default function TeacherDeliveries({ deliveries, assignmentId }: TeacherDeliveriesProps) {
+function isDeliveryLate(delivery: Delivery, dueDate?: string) {
+  if (!dueDate) return false;
+  const deadline = new Date(dueDate).getTime();
+  const submittedAt = new Date(delivery.created).getTime();
+  const pendingUpdateAt = delivery.status === "pending" ? new Date(delivery.updated).getTime() : submittedAt;
+  return submittedAt > deadline || pendingUpdateAt > deadline;
+}
+
+function getFileName(delivery: Delivery) {
+  if (delivery.file) return delivery.file;
+  const url = delivery.repositoryUrl;
+  if (!url) return "archivo";
+
+  try {
+    return decodeURIComponent(new URL(url).pathname.split("/").pop() || "archivo");
+  } catch {
+    return url.split("/").pop() || "archivo";
+  }
+}
+
+function isPendingResubmission(delivery: Delivery) {
+  return delivery.status === "pending" && new Date(delivery.updated).getTime() > new Date(delivery.created).getTime();
+}
+
+export default function TeacherDeliveries({ deliveries, assignmentId, dueDate }: TeacherDeliveriesProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
   
@@ -89,6 +114,7 @@ export default function TeacherDeliveries({ deliveries, assignmentId }: TeacherD
                 const student = delivery.expand?.student;
                 const studentName = student?.name || "Estudiante desconocido";
                 const studentEmail = student?.email || "Sin email";
+                const pendingResubmission = isPendingResubmission(delivery);
                 
                 return (
                 <tr key={delivery.id}>
@@ -125,15 +151,34 @@ export default function TeacherDeliveries({ deliveries, assignmentId }: TeacherD
                       ) : (
                         <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 9V3.5L18.5 9M6 2c-1.11 0-1.99.89-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6H6z"/></svg>
                       )}
-                      Descargar ZIP
+                      Descargar
                     </button>
+                    <div className="text-xs text-zinc-500 dark:text-zinc-400 mt-1 max-w-[180px] truncate" title={getFileName(delivery)}>
+                      {getFileName(delivery)}
+                    </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-zinc-500 dark:text-zinc-400">
-                    <FormattedDate date={delivery.created} />
+                    <div><FormattedDate date={pendingResubmission ? delivery.updated : delivery.created} /></div>
+                    {pendingResubmission && (
+                      <div className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+                        Nueva versión
+                      </div>
+                    )}
+                    {isDeliveryLate(delivery, dueDate) && (
+                      <span className="mt-1 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300">
+                        Fuera de término
+                      </span>
+                    )}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm">
                     {delivery.status === 'published' ? (
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                        delivery.verdict === 'Aprobado'
+                          ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                          : delivery.verdict === 'Corregir y reenviar'
+                            ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300'
+                            : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                      }`}>
                         Enviada ({delivery.grade}/10) {delivery.verdict ? `- ${delivery.verdict}` : ''}
                       </span>
                     ) : delivery.status === 'draft' ? (
@@ -141,14 +186,18 @@ export default function TeacherDeliveries({ deliveries, assignmentId }: TeacherD
                         Borrador
                       </span>
                     ) : (
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-zinc-100 text-zinc-800 dark:bg-zinc-800 dark:text-zinc-400">
-                        Pendiente
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                        pendingResubmission
+                          ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300"
+                          : "bg-zinc-100 text-zinc-800 dark:bg-zinc-800 dark:text-zinc-400"
+                      }`}>
+                        {pendingResubmission ? "Pendiente de reevaluación" : "Pendiente"}
                       </span>
                     )}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <Link href={`/assignments/${assignmentId}/deliveries/${delivery.id}`} className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300">
-                      Ver detalles
+                      {delivery.status === "pending" ? "Evaluar" : "Ver detalles"}
                     </Link>
                   </td>
                 </tr>
@@ -156,7 +205,7 @@ export default function TeacherDeliveries({ deliveries, assignmentId }: TeacherD
               })
             ) : (
               <tr>
-                <td colSpan={4} className="px-6 py-4 text-center text-sm text-zinc-500 dark:text-zinc-400">
+                <td colSpan={5} className="px-6 py-4 text-center text-sm text-zinc-500 dark:text-zinc-400">
                   No hay entregas registradas
                 </td>
               </tr>

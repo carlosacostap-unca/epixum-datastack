@@ -1,5 +1,5 @@
 import { createServerClient } from './pocketbase-server';
-import { Class, Link, Assignment, User, Delivery, Course } from '@/types';
+import { Class, Link, Assignment, User, Delivery, DeliveryAttempt, Course } from '@/types';
 import { unstable_cache } from 'next/cache';
 import { cache } from 'react';
 import PocketBase from 'pocketbase';
@@ -186,5 +186,21 @@ export async function getDeliveryById(deliveryId: string) {
   } catch (error) {
     console.error('Error fetching delivery by ID:', error);
     return null;
+  }
+}
+
+export async function getDeliveryAttempts(deliveryId: string) {
+  const pb = await createServerClient();
+  try {
+    const records = await pb.collection('delivery_attempts').getFullList<DeliveryAttempt>({
+      filter: `delivery = "${deliveryId}"`,
+      sort: '-version,-submittedAt',
+      expand: 'student',
+    });
+
+    return records;
+  } catch (error) {
+    console.error('Error fetching delivery attempts:', error);
+    return [];
   }
 }

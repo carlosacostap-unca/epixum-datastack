@@ -17,6 +17,11 @@ export default async function TeacherCourseManagementPage(props: { params: Promi
   }
 
   const classes = await getClassesByCourse(course.id);
+  const assignments = [...(course.expand?.assignments || [])].sort((a, b) => {
+    if (!a.dueDate) return 1;
+    if (!b.dueDate) return -1;
+    return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
+  });
   
   // En PocketBase, cuando una relación es múltiple, el expand devuelve un array si hay elementos, 
   // pero puede que la respuesta sea un solo objeto o esté estructurado diferente.
@@ -98,6 +103,18 @@ export default async function TeacherCourseManagementPage(props: { params: Promi
           </div>
 
           <div>
+            <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--color-on-surface-variant)] mb-2">
+              Trabajos Prácticos
+            </p>
+            <div className="flex items-center gap-4">
+              <span className="text-5xl font-headline font-bold text-[var(--color-on-surface)] leading-none">
+                {assignments.length}
+              </span>
+              <span className="material-symbols-outlined text-2xl text-[var(--color-primary)]">assignment</span>
+            </div>
+          </div>
+
+          <div>
             <Link 
               href={`/docentes/cursos/${course.id}/consultas`}
               className="flex items-center justify-between w-full p-4 bg-[var(--color-surface-container-highest)] rounded-2xl hover:bg-[var(--color-primary)]/10 hover:text-[var(--color-primary)] transition-colors group border border-[var(--color-outline-variant)]"
@@ -157,6 +174,48 @@ export default async function TeacherCourseManagementPage(props: { params: Promi
                   </div>
                   <span className="px-6 py-3 bg-[var(--color-surface-container-highest)] text-[var(--color-on-surface)] rounded-full group-hover:text-[var(--color-primary)] group-hover:bg-[var(--color-surface-container-high)] transition-colors font-bold text-sm whitespace-nowrap flex items-center justify-center w-full md:w-auto gap-2">
                     <span>Gestionar</span>
+                    <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+                  </span>
+                </Link>
+              ))}
+            </div>
+          )}
+
+          <div className="flex items-center justify-between mt-8">
+            <h2 className="text-3xl font-headline font-bold text-[var(--color-on-surface)]">Trabajos Prácticos</h2>
+            <Link
+              href={`/docentes/cursos/${course.id}/tps/nuevo`}
+              className="flex items-center gap-2 px-6 py-3 bg-[var(--color-surface-container-highest)] text-[var(--color-on-surface)] rounded-full hover:text-[var(--color-primary)] hover:bg-[var(--color-surface-container-high)] transition-colors font-bold text-sm tracking-wide border border-[var(--color-outline-variant)]"
+            >
+              <span className="material-symbols-outlined text-lg">add</span>
+              <span>Nuevo TP</span>
+            </Link>
+          </div>
+
+          {assignments.length === 0 ? (
+            <div className="bg-[var(--color-surface-container-low)] rounded-[2.5rem] p-12 text-center flex flex-col items-center justify-center border border-[var(--color-outline-variant)]">
+              <span className="material-symbols-outlined text-5xl text-[var(--color-on-surface-variant)] mb-4">assignment</span>
+              <p className="text-[var(--color-on-surface-variant)] text-lg">No hay trabajos prácticos creados para este curso.</p>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-6">
+              {assignments.map((assignment) => (
+                <Link
+                  href={`/assignments/${assignment.id}`}
+                  key={assignment.id}
+                  className="bg-[var(--color-surface-container-low)] hover:bg-[var(--color-surface-container)] transition-colors rounded-[2rem] p-6 md:p-8 border border-[var(--color-outline-variant)] flex flex-col md:flex-row md:items-center justify-between gap-6 group"
+                >
+                  <div>
+                    <h3 className="text-xl font-bold text-[var(--color-on-surface)] mb-2 group-hover:text-[var(--color-primary)] transition-colors">{assignment.title}</h3>
+                    <div className="flex flex-wrap items-center gap-2 md:gap-4 text-sm text-[var(--color-on-surface-variant)]">
+                      <div className="flex items-center gap-1.5">
+                        <span className="material-symbols-outlined text-[16px]">schedule</span>
+                        <span>{assignment.dueDate ? <>Entrega: <FormattedDate date={assignment.dueDate} showTime={true} /></> : "Sin fecha límite"}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <span className="px-6 py-3 bg-[var(--color-surface-container-highest)] text-[var(--color-on-surface)] rounded-full group-hover:text-[var(--color-primary)] group-hover:bg-[var(--color-surface-container-high)] transition-colors font-bold text-sm whitespace-nowrap flex items-center justify-center w-full md:w-auto gap-2">
+                    <span>Ver entregas</span>
                     <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
                   </span>
                 </Link>

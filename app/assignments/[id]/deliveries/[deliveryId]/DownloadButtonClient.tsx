@@ -36,7 +36,7 @@ export default function DownloadButtonClient({ deliveryId }: { deliveryId: strin
           <path d="M13 9V3.5L18.5 9M6 2c-1.11 0-1.99.89-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6H6z" />
         </svg>
       )}
-      Descargar Entrega (ZIP)
+      Descargar entrega
     </button>
   );
 }

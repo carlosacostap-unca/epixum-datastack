@@ -1,6 +1,6 @@
 "use client";
 
-import { createAssignment, updateAssignment } from "@/lib/actions";
+import { createAssignment, createAssignmentForCourse, updateAssignment } from "@/lib/actions";
 import { Assignment } from "@/types";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -8,11 +8,12 @@ import RichTextEditor from "./RichTextEditor";
 
 interface AssignmentFormProps {
   assignment?: Assignment;
+  courseId?: string;
   onClose?: () => void;
   isEmbedded?: boolean;
 }
 
-export default function AssignmentForm({ assignment, onClose, isEmbedded = false }: AssignmentFormProps) {
+export default function AssignmentForm({ assignment, courseId, onClose, isEmbedded = false }: AssignmentFormProps) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -45,6 +46,8 @@ export default function AssignmentForm({ assignment, onClose, isEmbedded = false
       if (assignment) {
         // Update assignment
         result = await updateAssignment(assignment.id, formData);
+      } else if (courseId) {
+        result = await createAssignmentForCourse(courseId, formData);
       } else {
         result = await createAssignment(formData);
       }
@@ -86,21 +89,6 @@ export default function AssignmentForm({ assignment, onClose, isEmbedded = false
               className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100"
             />
           </div>
-
-          <div>
-            <label htmlFor="systemPrompt" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
-              Prompt de Sistema (Preevaluación IA)
-            </label>
-            <textarea
-              name="systemPrompt"
-              id="systemPrompt"
-              rows={4}
-              defaultValue={assignment?.systemPrompt}
-              placeholder="Instrucciones para la IA al evaluar esta entrega..."
-              className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100"
-            />
-          </div>
-
           <div>
             <label htmlFor="description" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
               Descripción
@@ -174,21 +162,6 @@ export default function AssignmentForm({ assignment, onClose, isEmbedded = false
             className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100"
           />
         </div>
-
-        <div>
-          <label htmlFor="systemPrompt" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
-            Prompt de Sistema (Preevaluación IA)
-          </label>
-          <textarea
-            name="systemPrompt"
-            id="systemPrompt"
-            rows={4}
-            defaultValue={assignment?.systemPrompt}
-            placeholder="Instrucciones para la IA al evaluar esta entrega..."
-            className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100"
-          />
-        </div>
-
         <div>
           <label htmlFor="description" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
             Descripción

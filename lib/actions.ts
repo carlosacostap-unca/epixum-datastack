@@ -101,8 +101,18 @@ export async function getDeliveryDownloadUrl(deliveryId: string) {
         return { success: false, error: 'Unauthorized access to delivery' };
     }
 
-    // Extract key from repositoryUrl
-    // Assuming repositoryUrl is like https://endpoint/bucket/filename.zip
+    if (delivery.file) {
+      return { success: true, url: pb.files.getUrl(delivery, delivery.file) };
+    }
+
+    if (!delivery.repositoryUrl) {
+        return { success: false, error: 'No delivery file found' };
+    }
+
+    if (!process.env.IDRIVE_BUCKET_NAME) {
+      return { success: true, url: delivery.repositoryUrl };
+    }
+
     const url = new URL(delivery.repositoryUrl);
     const key = url.pathname.split('/').pop();
 
@@ -116,6 +126,48 @@ export async function getDeliveryDownloadUrl(deliveryId: string) {
   } catch (error) {
     console.error('Failed to get download URL:', error);
     return { success: false, error: 'Failed to get download URL' };
+  }
+}
+
+export async function getDeliveryAttemptDownloadUrl(attemptId: string) {
+  const pb = await createServerClient();
+  const user = pb.authStore.model;
+
+  if (!user) {
+    return { success: false, error: 'Unauthorized' };
+  }
+
+  try {
+    const attempt = await pb.collection('delivery_attempts').getOne(attemptId);
+
+    if (user.role === 'estudiante' && attempt.student !== user.id) {
+      return { success: false, error: 'Unauthorized access to delivery attempt' };
+    }
+
+    if (attempt.file) {
+      return { success: true, url: pb.files.getUrl(attempt, attempt.file) };
+    }
+
+    if (!attempt.repositoryUrl) {
+      return { success: false, error: 'No delivery file found' };
+    }
+
+    if (!process.env.IDRIVE_BUCKET_NAME) {
+      return { success: true, url: attempt.repositoryUrl };
+    }
+
+    const url = new URL(attempt.repositoryUrl);
+    const key = url.pathname.split('/').pop();
+
+    if (!key) {
+      return { success: false, error: 'Invalid file key' };
+    }
+
+    const downloadUrl = await getPresignedDownloadUrl(key);
+    return { success: true, url: downloadUrl };
+  } catch (error) {
+    console.error('Failed to get delivery attempt download URL:', error);
+    return { success: false, error: 'Failed to get delivery attempt download URL' };
   }
 }
 
@@ -317,13 +369,17 @@ export async function createAssignmentForCourse(courseId: string, formData: Form
   const description = formData.get('description') as string;
   const dueDateStr = formData.get('dueDate') as string;
   const timeStr = formData.get('time') as string;
-  const systemPrompt = formData.get('systemPrompt') as string;
-
   if (!title) {
      return { success: false, error: 'Title is required' };
   }
 
   try {
+    const course = await pb.collection('courses').getOne(courseId);
+
+    if (user.role === 'docente' && !(course.teachers || []).includes(user.id)) {
+      return { success: false, error: 'No puedes crear trabajos prácticos en este curso' };
+    }
+
     let dateObj = null;
     if (dueDateStr) {
       if (dueDateStr.includes('T') && dueDateStr.endsWith('Z')) {
@@ -338,22 +394,15 @@ export async function createAssignmentForCourse(courseId: string, formData: Form
       title,
       description,
       dueDate: dateObj,
-      systemPrompt: systemPrompt || "",
     };
     
-    // Create the assignment
     const newAssignment = await pb.collection('assignments').create(data);
-    
-    // Get the course
-    const course = await pb.collection('courses').getOne(courseId);
-    
-    // Append the new assignment id
+
     const updatedAssignments = [...(course.assignments || []), newAssignment.id];
-    
-    // Update the course
     await pb.collection('courses').update(courseId, { assignments: updatedAssignments });
     
-    revalidatePath(`/courses/${courseId}`);
+    revalidatePath(`/docentes/cursos/${courseId}`);
+    revalidatePath(`/estudiantes/cursos/${courseId}`);
     return { success: true, assignmentId: newAssignment.id };
   } catch (error) {
     console.error('Failed to create assignment for course:', error);
@@ -372,8 +421,6 @@ export async function createAssignment(formData: FormData) {
   const title = formData.get('title') as string;
   const description = formData.get('description') as string;
   const dueDate = formData.get('dueDate') as string;
-  const systemPrompt = formData.get('systemPrompt') as string;
-
   if (!title) {
      return { success: false, error: 'Title is required' };
   }
@@ -382,7 +429,6 @@ export async function createAssignment(formData: FormData) {
     const data: any = {
       title,
       description,
-      systemPrompt: systemPrompt || "",
     };
     if (dueDate) data.dueDate = new Date(dueDate).toISOString();
     
@@ -409,13 +455,10 @@ export async function updateAssignment(assignmentId: string, formData: FormData)
   const title = formData.get('title') as string;
   const description = formData.get('description') as string;
   const dueDate = formData.get('dueDate') as string;
-  const systemPrompt = formData.get('systemPrompt') as string;
-
   try {
     const data: any = {
       title,
       description,
-      systemPrompt: systemPrompt || "",
     };
     if (dueDate) data.dueDate = new Date(dueDate).toISOString();
 
@@ -430,27 +473,6 @@ export async function updateAssignment(assignmentId: string, formData: FormData)
       console.error('PocketBase validation errors:', JSON.stringify(error.response.data, null, 2));
     }
     return { success: false, error: 'Failed to update assignment' };
-  }
-}
-
-export async function updateAssignmentSystemPrompt(assignmentId: string, systemPrompt: string) {
-  const pb = await createServerClient();
-  const user = pb.authStore.model;
-
-  if (!user || (user.role !== 'docente' && user.role !== 'admin')) {
-    throw new Error("Unauthorized");
-  }
-
-  try {
-    await pb.collection('assignments').update(assignmentId, {
-      systemPrompt: systemPrompt || "",
-    });
-    
-    revalidatePath(`/assignments/${assignmentId}`);
-    return { success: true };
-  } catch (error: any) {
-    console.error('Failed to update system prompt:', error);
-    return { success: false, error: 'Failed to update system prompt' };
   }
 }
 
@@ -605,6 +627,103 @@ export async function deleteLink(linkId: string, parentId?: string, parentType?:
 
 // Deliveries
 
+function getDeliverySubmittedAt(delivery: any) {
+  if (delivery.status === 'pending' && delivery.updated && delivery.updated !== delivery.created) {
+    return delivery.updated;
+  }
+
+  return delivery.created || new Date().toISOString();
+}
+
+async function getNextDeliveryAttemptVersion(pb: any, deliveryId: string) {
+  const existing = await pb.collection('delivery_attempts').getList(1, 1, {
+    filter: `delivery = "${deliveryId}"`,
+    sort: '-version',
+    fields: 'version',
+  });
+
+  return Number(existing.items?.[0]?.version || 0) + 1;
+}
+
+async function appendSnapshotFile(pb: any, data: FormData, record: any, file?: File | null) {
+  if (file && file.size > 0) {
+    data.append('file', file);
+    return;
+  }
+
+  if (record.file) {
+    const fileUrl = pb.files.getUrl(record, record.file);
+    if (record.repositoryUrl || fileUrl) {
+      data.append('repositoryUrl', record.repositoryUrl || fileUrl);
+    }
+
+    try {
+      const response = await fetch(fileUrl);
+      if (response.ok) {
+        const blob = await response.blob();
+        data.append('file', blob, record.file);
+      }
+    } catch (error) {
+      console.error('Failed to copy delivery file into history:', error);
+    }
+
+    return;
+  }
+
+  if (record.repositoryUrl) {
+    data.append('repositoryUrl', record.repositoryUrl);
+  }
+}
+
+async function createDeliveryAttemptSnapshot(pb: any, delivery: any, options: { file?: File | null; submittedAt?: string } = {}) {
+  const data = new FormData();
+  const version = await getNextDeliveryAttemptVersion(pb, delivery.id);
+  const status = delivery.status || 'pending';
+
+  data.append('delivery', delivery.id);
+  data.append('assignment', delivery.assignment);
+  data.append('student', delivery.student);
+  data.append('version', String(version));
+  data.append('submittedAt', options.submittedAt || getDeliverySubmittedAt(delivery));
+  data.append('status', status);
+
+  if (status !== 'pending' && delivery.grade !== undefined && delivery.grade !== null) data.append('grade', String(delivery.grade));
+  if (status !== 'pending' && delivery.feedback) data.append('feedback', delivery.feedback);
+  if (status !== 'pending' && delivery.verdict) data.append('verdict', delivery.verdict);
+  if (status !== 'pending' && (delivery.feedback || delivery.verdict || delivery.grade !== undefined) && delivery.updated) {
+    data.append('evaluatedAt', delivery.updated);
+  }
+
+  await appendSnapshotFile(pb, data, delivery, options.file);
+
+  return pb.collection('delivery_attempts').create(data);
+}
+
+async function ensureDeliveryAttemptHistory(pb: any, delivery: any) {
+  const existing = await pb.collection('delivery_attempts').getList(1, 1, {
+    filter: `delivery = "${delivery.id}"`,
+    fields: 'id',
+  });
+
+  if (existing.totalItems === 0) {
+    await createDeliveryAttemptSnapshot(pb, delivery);
+  }
+}
+
+async function updateLatestDeliveryAttemptEvaluation(pb: any, delivery: any, evaluation: Record<string, unknown>) {
+  const existing = await pb.collection('delivery_attempts').getList(1, 1, {
+    filter: `delivery = "${delivery.id}"`,
+    sort: '-version',
+  });
+
+  if (existing.totalItems === 0) {
+    await createDeliveryAttemptSnapshot(pb, delivery);
+    return updateLatestDeliveryAttemptEvaluation(pb, delivery, evaluation);
+  }
+
+  await pb.collection('delivery_attempts').update(existing.items[0].id, evaluation);
+}
+
 export async function createDelivery(formData: FormData) {
   const pb = await createServerClient();
   const user = pb.authStore.model;
@@ -615,25 +734,32 @@ export async function createDelivery(formData: FormData) {
 
   const assignmentId = (formData.get('assignmentId') as string)?.trim();
   const repositoryUrl = (formData.get('repositoryUrl') as string)?.trim();
+  const file = formData.get('file') as File | null;
 
-  if (!assignmentId || !repositoryUrl) {
-     return { success: false, error: 'Assignment ID and Repository URL are required' };
+  if (!assignmentId || ((!file || file.size === 0) && !repositoryUrl)) {
+     return { success: false, error: 'Assignment ID and delivery file are required' };
   }
 
   try {
-    // Check deadline
-    const assignment = await pb.collection('assignments').getOne(assignmentId);
-    if (assignment.dueDate && new Date() > new Date(assignment.dueDate)) {
-        return { success: false, error: 'El plazo de entrega ha finalizado' };
+    const data = new FormData();
+    data.append('assignment', assignmentId);
+    data.append('student', user.id);
+    data.append('status', 'pending');
+    if (repositoryUrl) data.append('repositoryUrl', repositoryUrl);
+    if (file && file.size > 0) data.append('file', file);
+
+    let record = await pb.collection('deliveries').create(data);
+
+    if (record.file) {
+      record = await pb.collection('deliveries').update(record.id, {
+        repositoryUrl: pb.files.getUrl(record, record.file),
+      });
     }
 
-    const data: Record<string, any> = {
-      assignment: assignmentId,
-      student: user.id,
-      repositoryUrl,
-    };
-    
-    await pb.collection('deliveries').create(data);
+    await createDeliveryAttemptSnapshot(pb, record, {
+      file,
+      submittedAt: new Date().toISOString(),
+    });
     
     revalidatePath(`/assignments/${assignmentId}`);
     return { success: true };
@@ -659,26 +785,44 @@ export async function updateDelivery(deliveryId: string, formData: FormData) {
   // although PocketBase API rules should handle this, it's good to be explicit or just try/catch
   
   const repositoryUrl = (formData.get('repositoryUrl') as string)?.trim();
+  const file = formData.get('file') as File | null;
   const assignmentId = (formData.get('assignmentId') as string)?.trim(); // Needed for revalidation
 
-  if (!repositoryUrl) {
-     return { success: false, error: 'Repository URL is required' };
+  if ((!file || file.size === 0) && !repositoryUrl) {
+     return { success: false, error: 'Delivery file is required' };
   }
 
   try {
-    // Check deadline
     const currentDelivery = await pb.collection('deliveries').getOne(deliveryId);
-    const assignment = await pb.collection('assignments').getOne(currentDelivery.assignment);
-    
-    if (assignment.dueDate && new Date() > new Date(assignment.dueDate)) {
-        return { success: false, error: 'El plazo de entrega ha finalizado' };
+
+    if (user.role === 'estudiante' && currentDelivery.student !== user.id) {
+      return { success: false, error: 'No puedes modificar esta entrega' };
     }
 
-    const data = {
-      repositoryUrl,
+    await ensureDeliveryAttemptHistory(pb, currentDelivery);
+
+    const data = new FormData();
+    data.append('status', 'pending');
+    if (repositoryUrl) data.append('repositoryUrl', repositoryUrl);
+    if (file && file.size > 0) data.append('file', file);
+
+    const record = await pb.collection('deliveries').update(deliveryId, data);
+    const resetData: Record<string, unknown> = {
+      status: 'pending',
+      grade: null,
+      feedback: '',
+      verdict: null,
     };
 
-    await pb.collection('deliveries').update(deliveryId, data);
+    if (record.file) {
+      resetData.repositoryUrl = pb.files.getUrl(record, record.file);
+    }
+
+    const updatedDelivery = await pb.collection('deliveries').update(deliveryId, resetData);
+    await createDeliveryAttemptSnapshot(pb, updatedDelivery, {
+      file,
+      submittedAt: new Date().toISOString(),
+    });
     
     if (assignmentId) revalidatePath(`/assignments/${assignmentId}`);
     return { success: true };
@@ -688,7 +832,7 @@ export async function updateDelivery(deliveryId: string, formData: FormData) {
   }
 }
 
-export async function updateDeliveryEvaluation(deliveryId: string, grade: number, feedback: string, verdict: 'Aprobado' | 'Corregir y reenviar' | undefined, status: 'draft' | 'published') {
+export async function updateDeliveryEvaluation(deliveryId: string, grade: number, feedback: string, verdict: 'Aprobado' | 'Desaprobado' | 'Corregir y reenviar' | undefined, status: 'draft' | 'published') {
   const pb = await createServerClient();
   const user = pb.authStore.model;
 
@@ -704,11 +848,19 @@ export async function updateDeliveryEvaluation(deliveryId: string, grade: number
     const delivery = await pb.collection('deliveries').getOne(deliveryId);
 
     
-    await pb.collection('deliveries').update(deliveryId, {
+    const evaluatedAt = new Date().toISOString();
+    const updatedDelivery = await pb.collection('deliveries').update(deliveryId, {
       grade,
       feedback,
       verdict,
       status
+    });
+    await updateLatestDeliveryAttemptEvaluation(pb, updatedDelivery, {
+      grade,
+      feedback,
+      verdict,
+      status,
+      evaluatedAt,
     });
     
     revalidatePath(`/assignments/${delivery.assignment}`);

@@ -1,10 +1,11 @@
-import { getAssignment, getDeliveryById } from "@/lib/data";
+import { getAssignment, getDeliveryAttempts, getDeliveryById } from "@/lib/data";
 import { getCurrentUser } from "@/lib/pocketbase-server";
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import FormattedDate from "@/components/FormattedDate";
 import DownloadButtonClient from './DownloadButtonClient';
-import AIPreevaluationClient from './AIPreevaluationClient';
+import DeliveryEvaluationClient from "./DeliveryEvaluationClient";
+import DeliveryHistory from "./DeliveryHistory";
 
 export const dynamic = 'force-dynamic';
 
@@ -23,8 +24,24 @@ export default async function DeliveryDetailsPage({ params }: { params: Promise<
     return notFound();
   }
 
+  const attempts = await getDeliveryAttempts(deliveryId);
   const student = delivery.expand?.student;
   const pbUrl = process.env.NEXT_PUBLIC_POCKETBASE_URL?.replace(/\/$/, "") || "";
+  const deadline = assignment.dueDate ? new Date(assignment.dueDate).getTime() : null;
+  const submittedAt = new Date(delivery.created).getTime();
+  const pendingUpdateAt = delivery.status === "pending" ? new Date(delivery.updated).getTime() : submittedAt;
+  const isLate = deadline !== null && (submittedAt > deadline || pendingUpdateAt > deadline);
+  const isPendingResubmission = delivery.status === "pending" && pendingUpdateAt > submittedAt;
+  const deliveredAt = isPendingResubmission ? delivery.updated : delivery.created;
+  const deliveredFileName = (() => {
+    if (delivery.file) return delivery.file;
+    if (!delivery.repositoryUrl) return "archivo";
+    try {
+      return decodeURIComponent(new URL(delivery.repositoryUrl).pathname.split("/").pop() || "archivo");
+    } catch {
+      return delivery.repositoryUrl?.split("/").pop() || "archivo";
+    }
+  })();
 
   return (
     <div className="container mx-auto p-8 min-h-screen max-w-4xl">
@@ -43,7 +60,12 @@ export default async function DeliveryDetailsPage({ params }: { params: Promise<
             </p>
           </div>
           <div className="text-sm text-zinc-500 dark:text-zinc-400">
-            Fecha de entrega: <FormattedDate date={delivery.created} showTime={true} />
+            {isPendingResubmission ? "Nueva versión enviada" : "Fecha de entrega"}: <FormattedDate date={deliveredAt} showTime={true} />
+            {isLate && (
+              <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300">
+                Fuera de término
+              </span>
+            )}
           </div>
         </div>
 
@@ -90,10 +112,10 @@ export default async function DeliveryDetailsPage({ params }: { params: Promise<
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
                   <div>
-                    <div className="font-medium text-zinc-900 dark:text-zinc-100 truncate max-w-[200px]" title={delivery.repositoryUrl}>
-                      {delivery.repositoryUrl || "Sin archivo"}
+                    <div className="font-medium text-zinc-900 dark:text-zinc-100 truncate max-w-[200px]" title={deliveredFileName}>
+                      {deliveredFileName || "Sin archivo"}
                     </div>
-                    <div className="text-xs text-zinc-500">ZIP entregado</div>
+                    <div className="text-xs text-zinc-500">Archivo entregado</div>
                   </div>
                 </div>
                 
@@ -102,11 +124,10 @@ export default async function DeliveryDetailsPage({ params }: { params: Promise<
             </div>
           </div>
 
-          {/* AI Preevaluation Section */}
-          <AIPreevaluationClient 
-            assignmentId={assignment.id} 
-            deliveryId={delivery.id} 
-            initialPrompt={assignment.systemPrompt || ''}
+          <DeliveryHistory attempts={attempts} />
+
+          <DeliveryEvaluationClient
+            deliveryId={delivery.id}
             initialGrade={delivery.grade}
             initialFeedback={delivery.feedback}
             initialVerdict={delivery.verdict}

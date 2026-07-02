@@ -25,6 +25,11 @@ export default async function EstudianteCoursePage(props: { params: Promise<{ id
   }
 
   const classes = await getClassesByCourse(course.id);
+  const assignments = [...(course.expand?.assignments || [])].sort((a, b) => {
+    if (!a.dueDate) return 1;
+    if (!b.dueDate) return -1;
+    return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
+  });
 
   // Ordenar clases cronológicamente (más antiguas primero)
   const sortedClasses = [...classes].sort((a, b) => {
@@ -81,6 +86,18 @@ export default async function EstudianteCoursePage(props: { params: Promise<{ id
                 {sortedClasses.length}
               </span>
               <span className="material-symbols-outlined text-2xl text-[var(--color-primary)]">menu_book</span>
+            </div>
+          </div>
+
+          <div>
+            <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--color-on-surface-variant)] mb-2">
+              Trabajos Prácticos
+            </p>
+            <div className="flex items-center gap-4">
+              <span className="text-5xl font-headline font-bold text-[var(--color-on-surface)] leading-none">
+                {assignments.length}
+              </span>
+              <span className="material-symbols-outlined text-2xl text-[var(--color-primary)]">assignment</span>
             </div>
           </div>
 
@@ -144,6 +161,57 @@ export default async function EstudianteCoursePage(props: { params: Promise<{ id
                   </span>
                 </Link>
               ))}
+            </div>
+          )}
+        </div>
+
+        <div className="flex flex-col gap-8">
+          <div className="flex items-center justify-between">
+            <h2 className="text-3xl font-headline font-bold text-[var(--color-on-surface)] flex items-center gap-3">
+              <span className="material-symbols-outlined text-[var(--color-primary)]">assignment</span>
+              Trabajos Prácticos
+            </h2>
+          </div>
+
+          {assignments.length === 0 ? (
+            <div className="bg-[var(--color-surface-container-low)] rounded-[2.5rem] p-12 text-center flex flex-col items-center justify-center border border-[var(--color-outline-variant)]">
+              <span className="material-symbols-outlined text-5xl text-[var(--color-on-surface-variant)] mb-4">assignment</span>
+              <p className="text-[var(--color-on-surface-variant)] text-lg">Aún no hay trabajos prácticos publicados para este curso.</p>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-6">
+              {assignments.map((assignment) => {
+                const isPastDue = assignment.dueDate ? new Date() > new Date(assignment.dueDate) : false;
+
+                return (
+                  <Link
+                    href={`/assignments/${assignment.id}`}
+                    key={assignment.id}
+                    className="bg-[var(--color-surface-container-low)] hover:bg-[var(--color-surface-container)] transition-colors rounded-[2rem] p-6 md:p-8 border border-[var(--color-outline-variant)] flex flex-col md:flex-row md:items-center justify-between gap-6 group"
+                  >
+                    <div>
+                      <div className="flex flex-wrap items-center gap-3 mb-2">
+                        <h3 className="text-xl font-bold text-[var(--color-on-surface)] group-hover:text-[var(--color-primary)] transition-colors">{assignment.title}</h3>
+                        {isPastDue && (
+                          <span className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300">
+                            Fuera de término
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex flex-wrap items-center gap-2 md:gap-4 text-sm text-[var(--color-on-surface-variant)]">
+                        <div className="flex items-center gap-1.5">
+                          <span className="material-symbols-outlined text-[16px]">schedule</span>
+                          <span>{assignment.dueDate ? <>Entrega: <FormattedDate date={assignment.dueDate} showTime={true} /></> : "Sin fecha límite"}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <span className="px-6 py-3 bg-[var(--color-surface-container-highest)] text-[var(--color-on-surface)] rounded-full group-hover:text-[var(--color-primary)] group-hover:bg-[var(--color-surface-container-high)] transition-colors font-bold text-sm whitespace-nowrap flex items-center justify-center w-full md:w-auto gap-2 shrink-0">
+                      <span>Ver y entregar</span>
+                      <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+                    </span>
+                  </Link>
+                );
+              })}
             </div>
           )}
         </div>
