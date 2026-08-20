@@ -3,6 +3,7 @@ import { getCurrentUser } from "@/lib/pocketbase-server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import FormattedDate from "@/components/FormattedDate";
+import { sortByTitleAscending } from "@/lib/sorting";
 
 export const dynamic = 'force-dynamic';
 
@@ -25,18 +26,8 @@ export default async function EstudianteCoursePage(props: { params: Promise<{ id
   }
 
   const classes = await getClassesByCourse(course.id);
-  const assignments = [...(course.expand?.assignments || [])].sort((a, b) => {
-    if (!a.dueDate) return 1;
-    if (!b.dueDate) return -1;
-    return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
-  });
-
-  // Ordenar clases cronológicamente (más antiguas primero)
-  const sortedClasses = [...classes].sort((a, b) => {
-    if (!a.date) return 1;
-    if (!b.date) return -1;
-    return new Date(a.date).getTime() - new Date(b.date).getTime();
-  });
+  const assignments = sortByTitleAscending(course.expand?.assignments || []);
+  const sortedClasses = sortByTitleAscending(classes);
 
   return (
     <div className="flex-1 p-6 md:p-12 overflow-y-auto w-full h-full">

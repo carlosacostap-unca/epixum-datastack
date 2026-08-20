@@ -4,6 +4,7 @@ import { unstable_cache } from 'next/cache';
 import { cache } from 'react';
 import PocketBase from 'pocketbase';
 import { cookies } from 'next/headers';
+import { sortByTitleAscending } from './sorting';
 
 // Helper to create client with token for cached functions
 const createClientWithToken = (token: string | undefined) => {
@@ -61,30 +62,30 @@ export const getStudents = cache(async () => {
 export async function getAllCourses() {
     const pb = await createServerClient();
     const records = await pb.collection('courses').getFullList<Course>({
-        sort: '-created',
+        sort: 'title',
         expand: 'students,teachers'
     });
-    return records;
+    return sortByTitleAscending(records);
 }
 
 export async function getTeacherCourses(teacherId: string) {
     const pb = await createServerClient();
     const records = await pb.collection('courses').getFullList<Course>({
         filter: `teachers ~ "${teacherId}"`,
-        sort: '-created',
+        sort: 'title',
         expand: 'students,teachers'
     });
-    return records;
+    return sortByTitleAscending(records);
 }
 
 export async function getStudentCourses(studentId: string) {
     const pb = await createServerClient();
     const records = await pb.collection('courses').getFullList<Course>({
         filter: `students ~ "${studentId}"`,
-        sort: '-created',
+        sort: 'title',
         expand: 'teachers'
     });
-    return records;
+    return sortByTitleAscending(records);
 }
 
 export async function getCourse(id: string) {
@@ -98,9 +99,9 @@ export async function getCourse(id: string) {
 export async function getAllClasses() {
     const pb = await createServerClient();
     const records = await pb.collection('classes').getFullList<Class>({
-        sort: '-date', // Ordenar por fecha descendente
+        sort: 'title',
     });
-    return records;
+    return sortByTitleAscending(records);
 }
 
 export async function getClassesByCourse(courseId: string) {
@@ -110,8 +111,7 @@ export async function getClassesByCourse(courseId: string) {
             expand: 'classes'
         });
         const classes = course.expand?.classes || [];
-        // Ordenar por fecha descendente
-        return classes.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        return sortByTitleAscending(classes);
     } catch (e) {
         console.error("Error in getClassesByCourse:", e);
         return [];
@@ -127,9 +127,9 @@ export async function getClass(id: string) {
 export async function getAllAssignments() {
   const pb = await createServerClient();
   const records = await pb.collection('assignments').getFullList<Assignment>({
-      sort: '-created', // Ordenar por creación descendente
+      sort: 'title',
   });
-  return records;
+  return sortByTitleAscending(records);
 }
 
 export async function getAssignment(id: string) {

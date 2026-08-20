@@ -1,8 +1,9 @@
-import { getCourse, getUsers, getClassesByCourse } from "@/lib/data";
+import { getCourse, getClassesByCourse } from "@/lib/data";
 import { getCurrentUser } from "@/lib/pocketbase-server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import FormattedDate from "@/components/FormattedDate";
+import { sortByTitleAscending } from "@/lib/sorting";
 
 export default async function TeacherCourseManagementPage(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
@@ -17,20 +18,9 @@ export default async function TeacherCourseManagementPage(props: { params: Promi
   }
 
   const classes = await getClassesByCourse(course.id);
-  const assignments = [...(course.expand?.assignments || [])].sort((a, b) => {
-    if (!a.dueDate) return 1;
-    if (!b.dueDate) return -1;
-    return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
-  });
+  const assignments = sortByTitleAscending(course.expand?.assignments || []);
   
-  // En PocketBase, cuando una relación es múltiple, el expand devuelve un array si hay elementos, 
-  // pero puede que la respuesta sea un solo objeto o esté estructurado diferente.
-  // Vamos a asegurar que students sea siempre un array iterando sobre course.students si existe,
-  // o usando course.expand?.students.
-  let students: any[] = [];
-  if (course.expand?.students) {
-    students = Array.isArray(course.expand.students) ? course.expand.students : [course.expand.students];
-  }
+  const students = course.expand?.students || [];
 
   return (
     <div className="flex-1 p-6 md:p-12 overflow-y-auto w-full h-full">
