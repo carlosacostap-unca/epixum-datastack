@@ -3,6 +3,8 @@ import { getCourse, getUsers, getAllClasses, getAllAssignments } from '@/lib/dat
 import { getInquiries } from '@/lib/actions-inquiries';
 import { notFound } from 'next/navigation';
 import DeleteCourseButton from './DeleteCourseButton';
+import { Level3StaffPanel } from '@/components/PowerBILevel3';
+import { LEVEL_2_COURSE_ID } from '@/lib/power-bi-level3';
 
 export default async function EditCoursePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -26,6 +28,8 @@ export default async function EditCoursePage({ params }: { params: Promise<{ id:
         <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">Editar Curso: {course.title}</h1>
         <DeleteCourseButton id={course.id} title={course.title} />
       </div>
+
+      {course.id === LEVEL_2_COURSE_ID && <Level3StaffPanel course={course} />}
       
       <div className="bg-white dark:bg-zinc-800 rounded-lg shadow-sm border border-zinc-200 dark:border-zinc-700 overflow-hidden">
         <CourseForm 

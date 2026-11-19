@@ -4,6 +4,8 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import FormattedDate from "@/components/FormattedDate";
 import { sortByTitleAscending } from "@/lib/sorting";
+import { Level3StaffPanel } from "@/components/PowerBILevel3";
+import { LEVEL_2_COURSE_ID } from "@/lib/power-bi-level3";
 
 export default async function TeacherCourseManagementPage(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
@@ -118,6 +120,8 @@ export default async function TeacherCourseManagementPage(props: { params: Promi
           </div>
         </div>
       </header>
+
+      {course.id === LEVEL_2_COURSE_ID && <Level3StaffPanel course={course} />}
 
       {/* Main Content Area */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-12">

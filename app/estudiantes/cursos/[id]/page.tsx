@@ -4,6 +4,8 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import FormattedDate from "@/components/FormattedDate";
 import { sortByTitleAscending } from "@/lib/sorting";
+import { Level3StudentPanel } from "@/components/PowerBILevel3";
+import { LEVEL_2_COURSE_ID } from "@/lib/power-bi-level3";
 
 export const dynamic = 'force-dynamic';
 
@@ -39,6 +41,8 @@ export default async function EstudianteCoursePage(props: { params: Promise<{ id
         <span className="material-symbols-outlined group-hover:-translate-x-1 transition-transform">arrow_back</span>
         <span className="font-bold text-sm tracking-widest uppercase">Volver a mis cursos</span>
       </Link>
+
+      {course.id === LEVEL_2_COURSE_ID && <Level3StudentPanel studentId={user.id} />}
 
       {/* Asymmetrical Hero Section */}
       <header className="mb-12 md:mb-24 flex flex-col md:flex-row gap-10 md:gap-20 items-start justify-between">
