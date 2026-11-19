@@ -1,0 +1,15 @@
+{
+  "name": "power_bi_level3_responses",
+  "type": "base",
+  "listRule": "(student = @request.auth.id && @request.auth.role = 'estudiante') || @request.auth.role = 'admin' || (@request.auth.role = 'docente' && @collection.courses:source.id ?= 'c8lo44fd4tjzkcm' && @collection.courses:source.teachers.id ?= @request.auth.id)",
+  "viewRule": "(student = @request.auth.id && @request.auth.role = 'estudiante') || @request.auth.role = 'admin' || (@request.auth.role = 'docente' && @collection.courses:source.id ?= 'c8lo44fd4tjzkcm' && @collection.courses:source.teachers.id ?= @request.auth.id)",
+  "createRule": "@request.auth.role = 'estudiante' && @request.body.student = @request.auth.id && @collection.courses:source.id ?= 'c8lo44fd4tjzkcm' && @collection.courses:source.students.id ?= @request.auth.id",
+  "updateRule": null,
+  "deleteRule": null,
+  "fields": [
+    { "name": "student", "type": "relation", "collectionId": "_pb_users_auth_", "maxSelect": 1, "required": true },
+    { "name": "answer", "type": "select", "values": ["yes", "no"], "maxSelect": 1, "required": true },
+    { "name": "created", "type": "autodate", "onCreate": true }
+  ],
+  "indexes": ["CREATE UNIQUE INDEX idx_power_bi_level3_response_student ON power_bi_level3_responses (student)"]
+}
